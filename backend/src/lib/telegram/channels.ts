@@ -11,7 +11,7 @@ export const createTelegramFolderChannel = async (name: string) => {
         })
     );
 
-    const channel = result.chats[0];
+    const channel = (result as any).chats[0];
 
     if (!channel) {
         throw new Error("❌ Failed to create channel")

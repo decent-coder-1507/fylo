@@ -35,9 +35,9 @@ export const listFoldersController = async (req: Request, res: Response) => {
     }
 }
 
-export const getFolderByIdController = async (req: Request, res: Response){
+export const getFolderByIdController = async (req: Request, res: Response) => {
     try {
-        const folder = getFolderByIdService(req.params.id);
+        const folder = await getFolderByIdService(req.params.id as string);
 
         if (!folder) {
             console.error(`Failed to retrieve folder with ID: ${req.params.id}`)
@@ -57,7 +57,7 @@ export const getFolderByIdController = async (req: Request, res: Response){
 
 export const deleteFolderController = async (req: Request, res: Response) => {
     try {
-        await deleteFolderService(req.params.id);
+        await deleteFolderService(req.params.id as string);
 
         res.json({
             success: true

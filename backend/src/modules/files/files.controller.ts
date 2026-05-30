@@ -9,7 +9,9 @@ export const uploadFileController = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "No file uploaded" });
         }
 
-        const result = await uploadFileService(file.path);
+        const { folderId } = req.body;
+
+        const result = await uploadFileService(file.path, folderId);
 
         res.json(result);
     } catch (error) {

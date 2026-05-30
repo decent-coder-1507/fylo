@@ -1,7 +1,7 @@
 import { client } from "./client";
 import fs from "fs";
 
-export const uploadFileToTeleStore = async (target: string, filePath: string) => {
+export const uploadFileToTeleStore = async (target: any, filePath: string) => {
     const result = await client.sendFile(target, {  //me => root folder
         file: filePath,
         caption: "Uploaded via TeleStore",
