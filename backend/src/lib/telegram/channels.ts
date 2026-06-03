@@ -1,5 +1,6 @@
 import { client } from "./client";
 import { Api } from "telegram";
+import bigInt from "big-integer";
 
 export const createTelegramFolderChannel = async (name: string) => {
     const result = await client.invoke(
@@ -23,3 +24,21 @@ export const createTelegramFolderChannel = async (name: string) => {
         title: channel.title
     }
 }
+
+export const deleteTelegramFolderChannel = async (telegramId: string, accessHash?: string) => {
+    let channel: any;
+    if (accessHash) {
+        channel = new Api.InputChannel({
+            channelId: bigInt(telegramId),
+            accessHash: bigInt(accessHash),
+        });
+    } else {
+        channel = bigInt(telegramId);
+    }
+
+    await client.invoke(
+        new Api.channels.DeleteChannel({
+            channel,
+        })
+    );
+};

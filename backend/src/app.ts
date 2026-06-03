@@ -9,7 +9,10 @@ import foldersRoutes from "./modules/folders/folders.routes";
 };
 
 const app = express();
-app.use(cors()); // Allow requests from frontend
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+})); // Allow requests from frontend with credentials
 app.use(express.json());
 
 app.use("/api/files", filesRoutes);

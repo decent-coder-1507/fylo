@@ -12,3 +12,13 @@ export const createFolder = async (name: string) => {
 
     return res.data;
 };
+
+export const getFolder = async (id: string) => {
+    const res = await api.get(`/folders/${id}`);
+    return res.data;
+};
+
+export const deleteFolder = async (id: string) => {
+    const res = await api.delete(`/folders/${id}`);
+    return res.data;
+};

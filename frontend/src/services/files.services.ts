@@ -27,3 +27,10 @@ export const uploadFile = async (
     );
     return res.data;
 };
+
+export const downloadFile = async (fileId: string) => {
+    const res = await api.get(`/files/${fileId}/download`, {
+        responseType: "blob",
+    });
+    return res.data;
+};

@@ -3,8 +3,8 @@ import { ListFilesQuery } from "./files.types";
 
 export const findFiles = async (query: ListFilesQuery) => {
     const {
-        page = 1,
-        limit = 20,
+        page,
+        limit,
         folderId,
         search,
         sortBy = "createdAt",
@@ -13,7 +13,10 @@ export const findFiles = async (query: ListFilesQuery) => {
 
     console.log("QUERY params received for fetch files listing: ", query)
 
-    const skip = (page - 1) * limit;
+    const pageNum = (!page || isNaN(page)) ? 1 : page;
+    const limitNum = (!limit || isNaN(limit)) ? 20 : limit;
+
+    const skip = (pageNum - 1) * limitNum;
 
     const where = {
         ...(folderId && { folderId }),
@@ -31,7 +34,7 @@ export const findFiles = async (query: ListFilesQuery) => {
         prisma.file.findMany({
             where,
             skip,
-            take: limit,
+            take: limitNum,
 
             orderBy: {
                 [sortBy]: sortOrder,
@@ -52,9 +55,9 @@ export const findFiles = async (query: ListFilesQuery) => {
         files,
         pagination: {
             total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
+            page: pageNum,
+            limit: limitNum,
+            totalPages: Math.ceil(total / limitNum),
         }
     }
 };
