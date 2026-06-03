@@ -265,12 +265,11 @@ export default function FileList({ files, folderName }: FileListProps) {
       {/* File List Table Container */}
       <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/30 dark:bg-zinc-900/10 overflow-hidden backdrop-blur-sm">
         {/* Table Header */}
-        <div className="hidden sm:flex items-center justify-between py-3 px-4 border-b border-zinc-200 dark:border-zinc-800/70 bg-zinc-50/50 dark:bg-zinc-950/40 text-[11px] font-medium text-zinc-500 dark:text-zinc-500 tracking-wider">
-          <div className="w-1/2">NAME</div>
-          <div className="w-20 text-right">SIZE</div>
-          <div className="w-40 text-right">TELEGRAM MSG</div>
-          <div className="w-32 text-right">CREATED AT</div>
-          <div className="w-10 text-right">ACTION</div>
+        <div className="hidden sm:grid grid-cols-12 gap-4 py-3 px-4 border-b border-zinc-200 dark:border-zinc-800/70 bg-zinc-50/50 dark:bg-zinc-955/40 text-[11px] font-medium text-zinc-500 dark:text-zinc-500 tracking-wider">
+          <div className="col-span-7">NAME</div>
+          <div className="col-span-2 text-right">SIZE</div>
+          <div className="col-span-2 text-right">CREATED AT</div>
+          <div className="col-span-1 text-right">ACTION</div>
         </div>
 
         {filteredAndSortedFiles.length === 0 ? (
@@ -287,16 +286,16 @@ export default function FileList({ files, folderName }: FileListProps) {
               return (
                 <div
                   key={file.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between py-3.5 px-4 hover:bg-zinc-100/50 dark:hover:bg-zinc-900/30 transition-colors gap-2 sm:gap-0 group"
+                  className="flex flex-col sm:grid sm:grid-cols-12 gap-2 sm:gap-4 py-3.5 px-4 hover:bg-zinc-100/50 dark:hover:bg-zinc-900/30 transition-colors group items-center"
                 >
                   {/* File icon & name */}
-                  <div className="flex items-center gap-3 w-full sm:w-1/2">
+                  <div className="flex items-center gap-3 col-span-12 sm:col-span-7 min-w-0">
                     <div
                       className={`flex items-center justify-center w-8 h-8 rounded-lg border transition-all shrink-0 ${meta.color}`}
                     >
                       <FileIcon className="w-4 h-4 stroke-[1.5]" />
                     </div>
-                    <div className="overflow-hidden space-y-0.5">
+                    <div className="overflow-hidden space-y-0.5 min-w-0">
                       <span
                         className="text-xs font-medium text-zinc-800 dark:text-zinc-200 group-hover:text-zinc-950 group-hover:dark:text-zinc-50 transition-colors line-clamp-1 break-all"
                         title={file.name}
@@ -304,30 +303,23 @@ export default function FileList({ files, folderName }: FileListProps) {
                         {file.name}
                       </span>
                       <span className="text-[10px] text-zinc-500 font-mono block sm:hidden">
-                        {formatBytes(file.size)} • Msg ID: {file.telegramMessageId}
+                        {formatBytes(file.size)}
                       </span>
                     </div>
                   </div>
 
                   {/* Size (desktop only) */}
-                  <div className="w-20 text-right text-xs text-zinc-600 dark:text-zinc-400 font-mono hidden sm:block">
+                  <div className="col-span-2 text-right text-xs text-zinc-600 dark:text-zinc-400 font-mono hidden sm:block">
                     {formatBytes(file.size)}
                   </div>
 
-                  {/* Telegram Message ID (desktop only) */}
-                  <div className="w-40 text-right hidden sm:block">
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 font-mono text-[9px] text-zinc-500 dark:text-zinc-400">
-                      ID: {file.telegramMessageId}
-                    </span>
-                  </div>
-
                   {/* Date (desktop only) */}
-                  <div className="w-32 text-right text-[11px] text-zinc-500 dark:text-zinc-500 font-mono hidden sm:block">
+                  <div className="col-span-2 text-right text-[11px] text-zinc-500 dark:text-zinc-500 font-mono hidden sm:block whitespace-nowrap">
                     {formatDate(file.createdAt)}
                   </div>
 
                   {/* Action download button */}
-                  <div className="w-full sm:w-10 flex justify-end">
+                  <div className="col-span-1 flex justify-end">
                     <button
                       onClick={() => handleDownload(file)}
                       disabled={isThisDownloading}
