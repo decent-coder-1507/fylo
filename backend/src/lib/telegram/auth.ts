@@ -8,12 +8,9 @@ export const initTelegram = async () => {
     const isAuthorized = await client.isUserAuthorized();
 
     if (!isAuthorized) {
-        console.error("\n❌ Telegram client is NOT authorized!");
-        console.error("👉 Please run the interactive login script in your terminal to authenticate first:");
-        console.error("   npm run telegram:login");
-        console.error("   (After successful login, start the server again with 'npm run dev')\n");
-        process.exit(1);
+        console.warn("\n⚠️ Telegram client is NOT authorized!");
+        console.warn("👉 You can authenticate by connecting your account in the web application UI.\n");
+    } else {
+        console.log("✅ Telegram Connected (Session loaded successfully)!");
     }
-
-    console.log("✅ Telegram Connected (Session loaded successfully)!");
 };

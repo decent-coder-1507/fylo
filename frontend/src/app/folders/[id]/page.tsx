@@ -114,7 +114,7 @@ export default function FolderDetailsPage({ params }: FolderDetailsPageProps) {
             The folder you are looking for does not exist, or has been deleted.
           </p>
           <Link
-            href="/"
+            href="/dashboard"
             className="h-9 px-4 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 hover:dark:text-zinc-100 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -132,14 +132,14 @@ export default function FolderDetailsPage({ params }: FolderDetailsPageProps) {
         <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-zinc-200 dark:border-zinc-900/60">
           <div className="flex items-center gap-2">
             <Link
-              href="/"
+              href="/dashboard"
               className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all shrink-0 cursor-pointer"
               title="Back to Dashboard"
             >
               <ChevronLeft className="w-4 h-4" />
             </Link>
             <div className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500 font-medium">
-              <Link href="/" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
+              <Link href="/dashboard" className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors">
                 Dashboard
               </Link>
               <span>/</span>
