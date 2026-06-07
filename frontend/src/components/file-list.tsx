@@ -17,9 +17,11 @@ import {
   MoreVertical,
   ExternalLink,
   Loader2,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import EmptyState from "./empty-state";
+import ShareLinkModal from "./share-link-modal";
 
 interface FileListProps {
   files: FileItem[];
@@ -124,6 +126,7 @@ export default function FileList({ files, folderName }: FileListProps) {
   const [sortBy, setSortBy] = useState<"name" | "size" | "date">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [shareFile, setShareFile] = useState<{ id: string; name: string } | null>(null);
 
   // Filter & Sort logic
   const filteredAndSortedFiles = useMemo(() => {
@@ -318,8 +321,15 @@ export default function FileList({ files, folderName }: FileListProps) {
                     {formatDate(file.createdAt)}
                   </div>
 
-                  {/* Action download button */}
-                  <div className="col-span-1 flex justify-end">
+                  {/* Action download & share buttons */}
+                  <div className="col-span-1 flex justify-end gap-1.5">
+                    <button
+                      onClick={() => setShareFile({ id: file.id, name: file.name })}
+                      className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all cursor-pointer"
+                      title="Share file"
+                    >
+                      <Share2 className="w-3.5 h-3.5 stroke-[1.5]" />
+                    </button>
                     <button
                       onClick={() => handleDownload(file)}
                       disabled={isThisDownloading}
@@ -339,6 +349,14 @@ export default function FileList({ files, folderName }: FileListProps) {
           </div>
         )}
       </div>
+
+      {/* Share Link Modal */}
+      <ShareLinkModal
+        isOpen={!!shareFile}
+        onClose={() => setShareFile(null)}
+        fileId={shareFile?.id || ""}
+        fileName={shareFile?.name || ""}
+      />
     </div>
   );
 }

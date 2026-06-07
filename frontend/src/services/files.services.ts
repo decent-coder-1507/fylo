@@ -34,3 +34,17 @@ export const downloadFile = async (fileId: string) => {
     });
     return res.data;
 };
+
+export const createShareLink = async (
+    fileId: string,
+    expiresInHours?: number,
+    maxUses?: number
+) => {
+    const res = await api.post("/share", {
+        fileId,
+        expiresInHours,
+        maxUses,
+    });
+    return res.data;
+};
+

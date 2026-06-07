@@ -46,8 +46,25 @@ model File {
     updatedAt DateTime @updatedAt
 
     chunks FileChunk[]
+    shareLinks ShareLink[]
 
     @@index([name])
+}
+
+model ShareLink {
+  id        String   @id @default(cuid())
+  token     String   @unique @default(uuid())
+
+  fileId    String
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime?
+  maxUses   Int?
+  useCount  Int      @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([token])
 }
 
 model FileChunk {
