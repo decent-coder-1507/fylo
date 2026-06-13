@@ -8,10 +8,10 @@ generator client {
 
 model Folder {
   id String @id @default(cuid())
-  
+
   name String
 
-  telegramId BigInt @unique
+  telegramId BigInt  @unique
   accessHash String?
 
   description String?
@@ -25,42 +25,43 @@ model Folder {
 }
 
 model File {
-    id String @id @default(uuid())
-    
-    name String
-    mimeType String?
-    size Int?
+  id String @id @default(uuid())
 
-    telegramMessageId Int
-    telegramFileId String?
+  name     String
+  mimeType String?
+  size     Int?
 
-    uploadedBy String?
+  telegramMessageId Int
+  telegramFileId    String?
 
-    folderId String?
-    folder Folder? @relation(fields: [folderId], references: [id])
+  uploadedBy String?
 
-    isChunked Boolean @default(false)
-    totalChunks Int @default(0)
-    
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  folderId String?
+  folder   Folder? @relation(fields: [folderId], references: [id])
 
-    chunks FileChunk[]
-    shareLinks ShareLink[]
+  isChunked   Boolean @default(false)
+  totalChunks Int     @default(0)
 
-    @@index([name])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chunks     FileChunk[]
+  shareLinks ShareLink[]
+  preview    FilePreview?
+
+  @@index([name])
 }
 
 model ShareLink {
-  id        String   @id @default(cuid())
-  token     String   @unique @default(uuid())
+  id    String @id @default(cuid())
+  token String @unique @default(uuid())
 
-  fileId    String
-  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
   expiresAt DateTime?
   maxUses   Int?
-  useCount  Int      @default(0)
+  useCount  Int       @default(0)
 
   createdAt DateTime @default(now())
 
@@ -71,9 +72,9 @@ model FileChunk {
   id String @id @default(cuid())
 
   fileId String
-  file File @relation(fields:[fileId], references:[id], onDelete:Cascade)
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
-  chunkIndex Int
+  chunkIndex        Int
   telegramMessageId Int
 
   size Int?
@@ -81,4 +82,50 @@ model FileChunk {
   createdAt DateTime @default(now())
 
   @@unique([fileId, chunkIndex])
+}
+
+model FilePreview {
+  id String @id @default(cuid())
+
+  fileId String @unique
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  status PreviewStatus @default(PENDING)
+
+  // Thumbnail support
+  thumbnailUrl      String? // Path or URL to the generated thumbnail image
+  thumbnailSize     Int? // Size of thumbnail in bytes
+  thumbnailMimeType String? // MIME type of thumbnail (e.g. image/jpeg, image/webp)
+
+  // Future-proof preview content fields
+  previewUrl      String? // Path/URL to the converted preview (e.g. video transcode, document PDF conversion)
+  previewMimeType String? // MIME type of the preview file
+  previewSize     Int? // Size of the preview file in bytes
+
+  // Metadata support
+  metadata Json? // Custom JSON for file type-specific fields (e.g. video dimensions/duration, audio waveforms, document page counts)
+
+  // Error tracking
+  error String? // Error message/stack trace if processing failed
+
+  // Retry tracking
+  attempts      Int       @default(0)
+  maxAttempts   Int       @default(3)
+  lastAttemptAt DateTime?
+
+  // Processing timestamps
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+}
+
+enum PreviewStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  SKIPPED
 }

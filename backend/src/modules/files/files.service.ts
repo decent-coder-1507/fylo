@@ -7,6 +7,7 @@ import bigInt from "big-integer";
 import fs from "fs";
 import path from "path";
 import { client } from "../../lib/telegram/client";
+import { createPreviewJob } from "../previews/previews.service";
 
 // instead of folder id we using InputPeerChannel
 export const uploadFileService = async (filePath: string, originalName: string, mimeType?: string, folderId?: string) => {
@@ -58,6 +59,14 @@ export const uploadFileService = async (filePath: string, originalName: string, 
     });
 
     console.log(`Saved file in database with ID: ${savedFile.id}`);
+
+    // Create and schedule preview generation job
+    try {
+        await createPreviewJob(savedFile.id);
+        console.log(`Scheduled preview generation job for file: ${savedFile.id}`);
+    } catch (previewErr) {
+        console.error(`⚠️ Failed to schedule preview job for file ${savedFile.id}:`, previewErr);
+    }
 
     // Cleanup local temp file and directory after upload
     try {

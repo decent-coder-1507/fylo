@@ -1,6 +1,11 @@
 import { Router } from "express";
 import multer from "multer";
 import { uploadFileController, listFilesController, downloadFileController } from "./files.controller";
+import { 
+    getFilePreviewController, 
+    getFileThumbnailAssetController, 
+    getFilePreviewAssetController 
+} from "../previews/previews.controller";
 import fs from "fs";
 import path from "path";
 
@@ -28,5 +33,10 @@ const upload = multer({ storage });
 router.post("/upload", upload.single("file"), uploadFileController);
 router.get("/", listFilesController);
 router.get("/:id/download", downloadFileController);
+
+// File Preview Routes
+router.get("/:id/preview", getFilePreviewController);
+router.get("/:id/preview/thumbnail", getFileThumbnailAssetController);
+router.get("/:id/preview/content", getFilePreviewAssetController);
 
 export default router;

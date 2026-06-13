@@ -7,6 +7,7 @@
     "start": "tsx src/server.ts",
     "dev": "tsx watch src/server.ts",
     "telegram:login": "tsx src/lib/telegram/login.ts",
+    "previews:worker": "tsx src/modules/previews/preview.worker.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,18 +15,25 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1064.0",
+    "@napi-rs/canvas": "^1.0.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "amqplib": "^2.0.1",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "input": "^1.0.1",
     "multer": "^2.1.1",
+    "pdfjs-dist": "^6.0.227",
     "pg": "^8.21.0",
     "prisma": "^7.8.0",
+    "sharp": "^0.34.5",
     "telegram": "^2.26.22"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.8",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/multer": "^2.1.0",

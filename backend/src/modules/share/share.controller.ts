@@ -32,7 +32,7 @@ export const createShareLinkController = async (req: Request, res: Response) => 
 
 export const getShareLinkInfoController = async (req: Request, res: Response) => {
     try {
-        const { token } = req.params;
+        const token = req.params.token as string;
 
         if (!token) {
             return res.status(400).json({ error: "Token is required" });
@@ -53,7 +53,7 @@ export const getShareLinkInfoController = async (req: Request, res: Response) =>
 
 export const downloadShareLinkController = async (req: Request, res: Response) => {
     try {
-        const { token } = req.params;
+        const token = req.params.token as string;
 
         if (!token) {
             return res.status(400).json({ error: "Token is required" });
