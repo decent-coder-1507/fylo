@@ -180,7 +180,7 @@ export default function FolderDetailsPage({ params }: FolderDetailsPageProps) {
                     <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
                     Created: {formatDate(folder.createdAt)}
                   </span>
-                  <span className="font-mono text-[10px] text-zinc-650 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 px-1.5 py-0.5 rounded">
+                  <span className="font-mono text-[10px] text-zinc-600 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 px-1.5 py-0.5 rounded">
                     TG ID: {folder.telegramId}
                   </span>
                 </div>
@@ -193,13 +193,13 @@ export default function FolderDetailsPage({ params }: FolderDetailsPageProps) {
                 <div className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                   Total Size
                 </div>
-                <div className="text-sm font-bold text-zinc-800 dark:text-zinc-205">{formatBytes(folderSize)}</div>
+                <div className="text-sm font-bold text-zinc-800 dark:text-zinc-200">{formatBytes(folderSize)}</div>
               </div>
               <div className="space-y-0.5 sm:text-right border-l sm:border-l border-zinc-200 dark:border-zinc-800/60 pl-6">
                 <div className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                   Total Files
                 </div>
-                <div className="text-sm font-bold text-zinc-800 dark:text-zinc-205">{fileCount}</div>
+                <div className="text-sm font-bold text-zinc-800 dark:text-zinc-200">{fileCount}</div>
               </div>
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function FolderDetailsPage({ params }: FolderDetailsPageProps) {
         {/* Upload Dropzone Container */}
         <section className="space-y-4">
           <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-            <HardDrive className="w-3.5 h-3.5 text-zinc-450 dark:text-zinc-500" />
+            <HardDrive className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
             Upload File
           </div>
           <UploadDropzone folderId={id} />
@@ -217,7 +217,7 @@ export default function FolderDetailsPage({ params }: FolderDetailsPageProps) {
         {/* Files Listing Explorer */}
         <section className="space-y-4 pt-4">
           <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-2">
-            <Layers className="w-3.5 h-3.5 text-zinc-450 dark:text-zinc-500" />
+            <Layers className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
             Files Explorer
           </div>
           {isFilesLoading ? (

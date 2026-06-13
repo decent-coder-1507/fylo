@@ -52,7 +52,7 @@ export function FileRowSkeleton() {
 export function FileListSkeleton({ count = 5 }: { count?: number }) {
   return (
     <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/30 dark:bg-zinc-900/10 overflow-hidden">
-      <div className="grid grid-cols-12 gap-4 py-3 px-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-955/40">
+      <div className="grid grid-cols-12 gap-4 py-3 px-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40">
         <div className="col-span-7">
           <div className="w-24 h-4 rounded shimmer-bg" />
         </div>

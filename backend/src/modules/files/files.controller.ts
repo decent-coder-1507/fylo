@@ -23,9 +23,11 @@ export const uploadFileController = async (req: Request, res: Response) => {
 export const downloadFileController = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+        const inline = req.query.inline === "true";
         const fileData = await downloadFileService(id as string);
 
-        res.setHeader("Content-Disposition", `attachment; filename="${encodeURIComponent(fileData.name)}"`);
+        const disposition = inline ? "inline" : "attachment";
+        res.setHeader("Content-Disposition", `${disposition}; filename="${encodeURIComponent(fileData.name)}"`);
         res.setHeader("Content-Type", fileData.mimeType);
         res.send(fileData.buffer);
     } catch (error) {

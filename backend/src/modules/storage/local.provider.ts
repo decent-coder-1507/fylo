@@ -61,4 +61,17 @@ export class LocalStorageProvider implements StorageProvider {
             throw err;
         }
     }
+
+    /**
+     * Downloads/retrieves the local asset content buffer.
+     */
+    public async download(url: string): Promise<{ buffer: Buffer; mimeType?: string }> {
+        const cleanedUrl = url.replace(/^\//, "");
+        const physicalPath = path.join(process.cwd(), cleanedUrl);
+        if (!fs.existsSync(physicalPath)) {
+            throw new Error("File not found on disk");
+        }
+        const buffer = await fs.promises.readFile(physicalPath);
+        return { buffer };
+    }
 }

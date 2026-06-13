@@ -43,4 +43,12 @@ export interface StorageProvider {
      * @param url - The public URL or path of the asset to delete
      */
     delete(url: string): Promise<void>;
+
+    /**
+     * Downloads/retrieves the asset content buffer.
+     * 
+     * @param url - The public URL or path of the asset to download
+     * @returns Promise<{ buffer: Buffer; mimeType?: string }>
+     */
+    download(url: string): Promise<{ buffer: Buffer; mimeType?: string }>;
 }

@@ -18,10 +18,12 @@ import {
   ExternalLink,
   Loader2,
   Share2,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import EmptyState from "./empty-state";
 import ShareLinkModal from "./share-link-modal";
+import FilePreviewModal from "./previews/file-preview-modal";
 
 interface FileListProps {
   files: FileItem[];
@@ -60,7 +62,7 @@ const getFileMeta = (fileName: string) => {
     case "md":
       return {
         icon: FileText,
-        color: "text-blue-550 dark:text-blue-400 bg-blue-500/10 border-blue-500/20",
+        color: "text-blue-500 dark:text-blue-400 bg-blue-500/10 border-blue-500/20",
         label: "Document",
       };
     case "xls":
@@ -127,6 +129,7 @@ export default function FileList({ files, folderName }: FileListProps) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [shareFile, setShareFile] = useState<{ id: string; name: string } | null>(null);
+  const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
 
   // Filter & Sort logic
   const filteredAndSortedFiles = useMemo(() => {
@@ -268,7 +271,7 @@ export default function FileList({ files, folderName }: FileListProps) {
       {/* File List Table Container */}
       <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/30 dark:bg-zinc-900/10 overflow-hidden backdrop-blur-sm">
         {/* Table Header */}
-        <div className="hidden sm:grid grid-cols-12 gap-4 py-3 px-4 border-b border-zinc-200 dark:border-zinc-800/70 bg-zinc-50/50 dark:bg-zinc-955/40 text-[11px] font-medium text-zinc-500 dark:text-zinc-500 tracking-wider">
+        <div className="hidden sm:grid grid-cols-12 gap-4 py-3 px-4 border-b border-zinc-200 dark:border-zinc-800/70 bg-zinc-50/50 dark:bg-zinc-950/40 text-[11px] font-medium text-zinc-500 dark:text-zinc-500 tracking-wider">
           <div className="col-span-7">NAME</div>
           <div className="col-span-2 text-right">SIZE</div>
           <div className="col-span-2 text-right">CREATED AT</div>
@@ -300,7 +303,8 @@ export default function FileList({ files, folderName }: FileListProps) {
                     </div>
                     <div className="overflow-hidden space-y-0.5 min-w-0">
                       <span
-                        className="text-xs font-medium text-zinc-800 dark:text-zinc-200 group-hover:text-zinc-950 group-hover:dark:text-zinc-50 transition-colors line-clamp-1 break-all"
+                        onClick={() => setPreviewFile(file)}
+                        className="text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:text-zinc-950 hover:dark:text-zinc-50 hover:underline cursor-pointer transition-colors line-clamp-1 break-all"
                         title={file.name}
                       >
                         {file.name}
@@ -323,6 +327,13 @@ export default function FileList({ files, folderName }: FileListProps) {
 
                   {/* Action download & share buttons */}
                   <div className="col-span-1 flex justify-end gap-1.5">
+                    <button
+                      onClick={() => setPreviewFile(file)}
+                      className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all cursor-pointer"
+                      title="Preview file"
+                    >
+                      <Eye className="w-3.5 h-3.5 stroke-[1.5]" />
+                    </button>
                     <button
                       onClick={() => setShareFile({ id: file.id, name: file.name })}
                       className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all cursor-pointer"
@@ -357,6 +368,17 @@ export default function FileList({ files, folderName }: FileListProps) {
         fileId={shareFile?.id || ""}
         fileName={shareFile?.name || ""}
       />
+
+      {/* File Preview Modal */}
+      {previewFile && (
+        <FilePreviewModal
+          isOpen={!!previewFile}
+          onClose={() => setPreviewFile(null)}
+          fileId={previewFile.id}
+          fileName={previewFile.name}
+          fileSize={previewFile.size}
+        />
+      )}
     </div>
   );
 }

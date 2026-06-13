@@ -128,7 +128,7 @@ export default function Sidebar({ children }: SidebarProps) {
                 <div className="text-[9px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                   Connected Account
                 </div>
-                <div className="text-xs font-semibold text-zinc-850 dark:text-zinc-200 truncate mt-0.5">
+                <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate mt-0.5">
                   {auth.user?.firstName}
                 </div>
                 {auth.user?.username && (
@@ -282,7 +282,7 @@ export default function Sidebar({ children }: SidebarProps) {
           <div className="max-w-5xl mx-auto">
             {isAuthLoading ? (
               <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 animate-pulse">
-                <Loader2 className="w-8 h-8 text-blue-505 dark:text-blue-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-blue-500 dark:text-blue-500 animate-spin" />
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">Verifying session status...</p>
               </div>
             ) : logoutMutation.isPending ? (
@@ -293,7 +293,7 @@ export default function Sidebar({ children }: SidebarProps) {
             ) : !auth?.authenticated ? (
               <div className="max-w-md mx-auto py-12 space-y-6">
                 <div className="text-center space-y-2">
-                  <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-650 dark:from-zinc-50 dark:to-zinc-400 bg-clip-text text-transparent">
+                  <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-zinc-50 dark:to-zinc-400 bg-clip-text text-transparent">
                     Access Restricted
                   </h1>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">

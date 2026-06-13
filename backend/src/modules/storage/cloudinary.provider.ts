@@ -112,4 +112,18 @@ export class CloudinaryStorageProvider implements StorageProvider {
             throw err;
         }
     }
+
+    /**
+     * Downloads/retrieves the Cloudinary asset content buffer.
+     */
+    public async download(url: string): Promise<{ buffer: Buffer; mimeType?: string }> {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to download from Cloudinary: ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const mimeType = response.headers.get("content-type") || undefined;
+        return { buffer, mimeType };
+    }
 }
