@@ -6,7 +6,7 @@ export const createTelegramFolderChannel = async (name: string) => {
     const result = await client.invoke(
         new Api.channels.CreateChannel({
             title: name,
-            about: `TeleStore Folder: ${name}`,
+            about: `Fylo Folder: ${name}`,
             megagroup: false,
             broadcast: true
         })

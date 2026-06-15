@@ -65,7 +65,7 @@ export default function Sidebar({ children }: SidebarProps) {
               <Server className="w-4 h-4" />
             </div>
             <span className="font-semibold text-sm tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-zinc-50 dark:to-zinc-400 bg-clip-text text-transparent group-hover:from-zinc-950 dark:group-hover:from-white transition-all">
-              TeleStore
+              Fylo
             </span>
           </Link>
         </div>
@@ -84,8 +84,8 @@ export default function Sidebar({ children }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all ${isActive
-                    ? "bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
-                    : "border border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/40"
+                  ? "bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                  : "border border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/40"
                   }`}
               >
                 <Icon className={`w-4 h-4 stroke-[1.5] ${isActive ? "text-blue-500 dark:text-blue-400" : ""}`} />
@@ -183,7 +183,7 @@ export default function Sidebar({ children }: SidebarProps) {
               <Server className="w-3.5 h-3.5" />
             </div>
             <span className="font-semibold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
-              TeleStore
+              Fylo
             </span>
           </Link>
           <div className="flex items-center gap-2">
@@ -224,8 +224,8 @@ export default function Sidebar({ children }: SidebarProps) {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                        ? "bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
-                        : "border border-transparent text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100/40 dark:hover:bg-zinc-900/40"
+                      ? "bg-zinc-200/50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                      : "border border-transparent text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100/40 dark:hover:bg-zinc-900/40"
                       }`}
                   >
                     <Icon className="w-4.5 h-4.5" />

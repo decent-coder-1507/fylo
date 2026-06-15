@@ -2,15 +2,15 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { 
-  Cloud, 
-  ArrowRight, 
-  HardDrive, 
-  Layers, 
-  Lock, 
-  Zap, 
-  Sparkles, 
-  Sun, 
+import {
+  Cloud,
+  ArrowRight,
+  HardDrive,
+  Layers,
+  Lock,
+  Zap,
+  Sparkles,
+  Sun,
   Moon,
   CheckCircle2,
   DollarSign,
@@ -20,7 +20,7 @@ import { useTheme } from "@/app/theme-provider";
 
 export default function LandingPage() {
   const { theme, toggleTheme } = useTheme();
-  
+
   // Storage calculator states
   const [storageSize, setStorageSize] = useState(500); // in GB
 
@@ -44,7 +44,7 @@ export default function LandingPage() {
               <Cloud className="w-4 h-4" />
             </div>
             <span className="font-bold text-sm tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-zinc-50 dark:to-zinc-400 bg-clip-text text-transparent">
-              TeleStore
+              Fylo.ai
             </span>
           </Link>
 
@@ -116,7 +116,7 @@ export default function LandingPage() {
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
                 <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
               </div>
-              <div className="font-mono text-[10px] tracking-wider text-zinc-400">console.telestore.app</div>
+              <div className="font-mono text-[10px] tracking-wider text-zinc-400">console.fylo.app</div>
               <div className="w-10" />
             </div>
             {/* Mock Screen Content */}
@@ -125,7 +125,7 @@ export default function LandingPage() {
                 <div className="h-5 w-28 rounded bg-zinc-200 dark:bg-zinc-800" />
                 <div className="h-8 w-24 rounded-lg bg-zinc-900 dark:bg-zinc-50" />
               </div>
-              
+
               <div className="grid grid-cols-3 gap-4">
                 <div className="h-24 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 space-y-3">
                   <div className="w-8 h-8 rounded-lg bg-zinc-200 dark:bg-zinc-900" />
@@ -169,7 +169,7 @@ export default function LandingPage() {
             Engineered for Storage Sovereignty
           </h2>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto">
-            Traditional clouds lock you into high recurring fees. TeleStore breaks the cycle by utilizing decentralized networks.
+            Traditional clouds lock you into high recurring fees. Fylo breaks the cycle by utilizing decentralized networks.
           </p>
         </div>
 
@@ -221,7 +221,7 @@ export default function LandingPage() {
               Calculate Your Yearly Cloud Costs
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Why pay monthly subscription fees for cloud space? Adjust the slider to represent your virtual storage needs, and see how much you save using TeleStore.
+              Why pay monthly subscription fees for cloud space? Adjust the slider to represent your virtual storage needs, and see how much you save using Fylo.
             </p>
 
             <div className="space-y-4">
@@ -259,7 +259,7 @@ export default function LandingPage() {
               <div className="absolute top-0 right-0 w-8 h-8 bg-blue-500/10 rounded-bl-xl flex items-center justify-center">
                 <Sparkles className="w-3.5 h-3.5 text-blue-500" />
               </div>
-              <div className="text-[10px] font-semibold text-blue-500 uppercase font-mono tracking-wider">TeleStore Space</div>
+              <div className="text-[10px] font-semibold text-blue-500 uppercase font-mono tracking-wider">Fylo Space</div>
               <div className="mt-2 text-2xl sm:text-3xl font-bold font-mono text-emerald-500 dark:text-emerald-400 flex items-center justify-center">
                 <DollarSign className="w-5 h-5 shrink-0" />
                 {teleStoreCost}
@@ -288,10 +288,10 @@ export default function LandingPage() {
               Bridges Decoupled Protocols into Structured Storage
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
-              Every major chat protocol contains an underutilized asset: unlimited storage pipelines for transmitting messages, video logs, and archives. 
+              Every major chat protocol contains an underutilized asset: unlimited storage pipelines for transmitting messages, video logs, and archives.
             </p>
             <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
-              TeleStore provides the indexing compiler layer. We translate disorganized packet transfers into interactive directories, with folder trees, filters, search utilities, and instant download tools.
+              Fylo provides the indexing compiler layer. We translate disorganized packet transfers into interactive directories, with folder trees, filters, search utilities, and instant download tools.
             </p>
 
             <ul className="space-y-3 pt-2 text-xs sm:text-sm text-zinc-700 dark:text-zinc-350">
@@ -359,7 +359,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <Cloud className="w-4 h-4 text-zinc-400" />
-            <span>© {new Date().getFullYear()} TeleStore. Storage Sovereignty for all.</span>
+            <span>© {new Date().getFullYear()} Fylo. Storage Sovereignty for all.</span>
           </div>
           <div className="flex items-center gap-6">
             <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-650 dark:hover:text-zinc-300 transition-colors flex items-center gap-1.5">

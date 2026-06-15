@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TeleStore — Modern Telegram-powered Cloud Storage",
+  title: "Fylo — Modern Telegram-powered Cloud Storage",
   description: "A fast, secure, and beautiful cloud storage dashboard powered by Telegram's server storage infrastructure.",
 };
 

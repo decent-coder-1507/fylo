@@ -1,22 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  useAuth, 
-  useSendCode, 
-  useSubmitCode, 
-  useSubmitPassword, 
-  useLogout 
+import {
+  useAuth,
+  useSendCode,
+  useSubmitCode,
+  useSubmitPassword,
+  useLogout
 } from "@/hooks/use-auth";
-import { 
-  Send, 
-  Key, 
-  Lock, 
-  User, 
-  CheckCircle2, 
-  Loader2, 
-  AlertCircle, 
-  LogOut, 
+import {
+  Send,
+  Key,
+  Lock,
+  User,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
+  LogOut,
   Phone,
   ArrowRight,
   ShieldCheck
@@ -34,10 +34,10 @@ export default function TelegramConnect() {
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
 
-  const isPending = 
-    sendCodeMutation.isPending || 
-    submitCodeMutation.isPending || 
-    submitPasswordMutation.isPending || 
+  const isPending =
+    sendCodeMutation.isPending ||
+    submitCodeMutation.isPending ||
+    submitPasswordMutation.isPending ||
     logoutMutation.isPending;
 
   const handleSendCode = async (e: React.FormEvent) => {
@@ -122,7 +122,7 @@ export default function TelegramConnect() {
     return (
       <div className="relative overflow-hidden p-6 sm:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/10 backdrop-blur-sm space-y-6">
         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/[0.03] rounded-full filter blur-xl pointer-events-none" />
-        
+
         <div className="flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
             <ShieldCheck className="w-6 h-6 stroke-[1.5]" />
@@ -315,7 +315,7 @@ export default function TelegramConnect() {
           Connect Telegram Account
         </h3>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-normal">
-          TeleStore uploads files by hosting them as message assets on your Telegram account. Enter your phone number (including country code) to connect.
+          Fylo uploads files by hosting them as message assets on your Telegram account. Enter your phone number (including country code) to connect.
         </p>
       </div>
 

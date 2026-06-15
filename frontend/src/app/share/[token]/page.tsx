@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  FileText, 
-  Image as ImageIcon, 
-  Video, 
-  Music, 
-  Archive, 
-  Download, 
-  Server, 
-  Calendar, 
-  HardDrive, 
+import {
+  FileText,
+  Image as ImageIcon,
+  Video,
+  Music,
+  Archive,
+  Download,
+  Server,
+  Calendar,
+  HardDrive,
   AlertTriangle,
   Loader2,
   Clock,
@@ -142,10 +142,10 @@ export default function ShareLandingPage({ params }: SharePageProps) {
     if (!fileInfo) return;
     setIsDownloading(true);
     toast.info("Downloading file from Telegram...");
-    
+
     // Redirect user to backend download url
     window.location.href = fileInfo.downloadUrl;
-    
+
     setTimeout(() => {
       setIsDownloading(false);
     }, 4000);
@@ -158,7 +158,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
       const now = new Date();
       const diffMs = expiresAt.getTime() - now.getTime();
       if (diffMs <= 0) return "Expired";
-      
+
       const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
       if (diffHrs < 24) {
         return `Expires in ${diffHrs} hour${diffHrs !== 1 ? "s" : ""}`;
@@ -188,7 +188,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-6 relative">
         <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none z-0" />
-        
+
         {/* Card */}
         <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-8 shadow-xl text-center space-y-5 z-10 animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-center w-12 h-12 mx-auto rounded-xl bg-red-500/10 border border-red-500/20 text-red-500">
@@ -224,7 +224,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
             <Server className="w-4 h-4" />
           </div>
           <span className="font-semibold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
-            TeleStore
+            Fylo
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-[10px] text-zinc-450 dark:text-zinc-550 uppercase font-mono font-bold tracking-wider">
@@ -236,13 +236,13 @@ export default function ShareLandingPage({ params }: SharePageProps) {
       {/* Main content body */}
       <main className="flex-1 flex items-center justify-center z-10 py-10">
         <div className="w-full max-w-md bg-white/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl shadow-xl backdrop-blur-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          
+
           {/* Card Hero */}
           <div className="p-8 border-b border-zinc-150 dark:border-zinc-800/40 bg-zinc-50/40 dark:bg-zinc-950/20 text-center flex flex-col items-center justify-center space-y-4">
             <div className={`flex items-center justify-center w-16 h-16 rounded-2xl border shadow-md transition-all ${fileMeta.color}`}>
               <FileIcon className="w-8 h-8 stroke-[1.5]" />
             </div>
-            
+
             <div className="space-y-1 w-full">
               <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 break-all line-clamp-2 px-4" title={fileInfo.name}>
                 {fileInfo.name}
@@ -256,7 +256,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
           {/* Details & Specs */}
           <div className="p-6 space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              
+
               {/* File Size */}
               <div className="p-3.5 rounded-xl bg-zinc-50/50 dark:bg-zinc-950/20 border border-zinc-100 dark:border-zinc-900 flex flex-col space-y-1">
                 <span className="text-[9px] font-semibold text-zinc-450 dark:text-zinc-550 uppercase tracking-wider flex items-center gap-1.5">
@@ -323,7 +323,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
 
       {/* Page footer */}
       <footer className="w-full text-center py-6 text-[10px] text-zinc-400 dark:text-zinc-650 z-10">
-        © 2026 TeleStore Inc. Powered by Telegram.
+        © 2026 Fylo Inc. Powered by Telegram.
       </footer>
     </div>
   );
