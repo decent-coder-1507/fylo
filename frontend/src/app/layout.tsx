@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fylo — Modern Telegram-powered Cloud Storage",
+  title: "Fylo — Modern File Storage Solution powered by TG Cloud",
   description: "A fast, secure, and beautiful cloud storage dashboard powered by Telegram's server storage infrastructure.",
+  icons: {
+    icon: "/fylo-stack-design-logo-removebg-preview.png",
+  },
 };
 
 export default function RootLayout({

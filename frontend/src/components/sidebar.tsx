@@ -59,14 +59,13 @@ export default function Sidebar({ children }: SidebarProps) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 border-r border-zinc-200 dark:border-zinc-900 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-md z-10 shrink-0 transition-colors duration-200">
         {/* Branding header */}
-        <div className="h-16 flex items-center px-6 border-b border-zinc-200 dark:border-zinc-900">
-          <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
-              <Server className="w-4 h-4" />
-            </div>
-            <span className="font-semibold text-sm tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-zinc-50 dark:to-zinc-400 bg-clip-text text-transparent group-hover:from-zinc-950 dark:group-hover:from-white transition-all">
-              Fylo
-            </span>
+        <div className="h-20 flex items-center px-6 border-b border-zinc-200 dark:border-zinc-900">
+          <Link href="/dashboard" className="flex items-center group">
+            <img
+              src="/fylo-full-logo-2.png"
+              alt="Fylo Logo"
+              className="h-14 w-auto object-contain dark:invert dark:hue-rotate-180 hover:scale-[1.03] active:scale-[0.97] transition-all duration-200"
+            />
           </Link>
         </div>
 
@@ -178,13 +177,12 @@ export default function Sidebar({ children }: SidebarProps) {
       {/* Mobile Hamburger & Header */}
       <div className="flex flex-col flex-1 min-w-0 z-10">
         <header className="h-16 flex items-center justify-between px-6 border-b border-zinc-200 dark:border-zinc-900 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-md md:hidden shrink-0 transition-colors duration-200">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200">
-              <Server className="w-3.5 h-3.5" />
-            </div>
-            <span className="font-semibold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
-              Fylo
-            </span>
+          <Link href="/" className="flex items-center group">
+            <img
+              src="/fylo-complete-logo.png"
+              alt="Fylo Logo"
+              className="h-11 w-auto object-contain dark:invert dark:hue-rotate-180 hover:scale-[1.03] active:scale-[0.97] transition-all duration-200"
+            />
           </Link>
           <div className="flex items-center gap-2">
             <button

@@ -39,13 +39,12 @@ export default function LandingPage() {
       {/* Global Navigation Bar */}
       <header className="sticky top-0 z-50 border-b border-zinc-200/80 dark:border-zinc-900 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-md transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-950 group-hover:scale-105 transition-transform duration-300">
-              <Cloud className="w-4 h-4" />
-            </div>
-            <span className="font-bold text-sm tracking-tight bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-zinc-50 dark:to-zinc-400 bg-clip-text text-transparent">
-              Fylo.ai
-            </span>
+          <Link href="/" className="flex items-center group">
+            <img
+              src="/fylo-complete-logo.png"
+              alt="Fylo Logo"
+              className="h-12 w-auto object-contain dark:invert dark:hue-rotate-180 hover:scale-[1.03] active:scale-[0.97] transition-all duration-200"
+            />
           </Link>
 
           <div className="flex items-center gap-4">
@@ -358,7 +357,11 @@ export default function LandingPage() {
       <footer className="relative z-10 border-t border-zinc-200 dark:border-zinc-900/60 py-12 text-center text-xs text-zinc-400 font-medium">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <Cloud className="w-4 h-4 text-zinc-400" />
+            <img
+              src="/fylo-stack-design-logo-removebg-preview.png"
+              alt="Fylo Logo"
+              className="w-4 h-4 object-contain"
+            />
             <span>© {new Date().getFullYear()} Fylo. Storage Sovereignty for all.</span>
           </div>
           <div className="flex items-center gap-6">

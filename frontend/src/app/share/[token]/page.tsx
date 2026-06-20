@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { api } from "@/app/lib/axios";
 import { toast } from "sonner";
+import Link from "next/link";
 
 // Helper to format bytes
 const formatBytes = (bytes?: number, decimals = 2) => {
@@ -219,14 +220,13 @@ export default function ShareLandingPage({ params }: SharePageProps) {
 
       {/* Header logo */}
       <header className="w-full max-w-4xl mx-auto py-6 flex items-center justify-between z-10">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200">
-            <Server className="w-4 h-4" />
-          </div>
-          <span className="font-semibold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
-            Fylo
-          </span>
-        </div>
+        <Link href="/" className="flex items-center group">
+          <img
+            src="/fylo-complete-logo.png"
+            alt="Fylo Logo"
+            className="h-11 w-auto object-contain dark:invert dark:hue-rotate-180 hover:scale-[1.03] active:scale-[0.97] transition-all duration-200"
+          />
+        </Link>
         <div className="flex items-center gap-1.5 text-[10px] text-zinc-450 dark:text-zinc-550 uppercase font-mono font-bold tracking-wider">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           Secure Share
