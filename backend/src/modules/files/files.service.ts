@@ -1,88 +1,10 @@
 import prisma from "../../lib/db/prisma";
-import { uploadFileToTeleStore } from "../../lib/telegram/upload";
 import { findFiles } from "./files.repository";
 import { ListFilesQuery } from "./files.types";
 import { Api } from "telegram";
 import bigInt from "big-integer";
-import fs from "fs";
-import path from "path";
 import { client } from "../../lib/telegram/client";
-import { createPreviewJob } from "../previews/previews.service";
 
-// instead of folder id we using InputPeerChannel
-export const uploadFileService = async (filePath: string, originalName: string, mimeType?: string, folderId?: string) => {
-    let target: any = "me";
-    let folder = null;
-
-    if (folderId) {
-        folder = await prisma.folder.findUnique({
-            where: { id: folderId }
-        });
-
-        if (!folder) {
-            try {
-                const numericFolderId = BigInt(folderId);
-                folder = await prisma.folder.findUnique({
-                    where: { telegramId: numericFolderId }
-                });
-            } catch (err) {
-                // Ignore if not a valid BigInt string
-            }
-        }
-
-        if (folder) {
-            if (folder.accessHash) {
-                target = new Api.InputPeerChannel({
-                    channelId: bigInt(folder.telegramId.toString()),
-                    accessHash: bigInt(folder.accessHash),
-                });
-            } else {
-                target = bigInt(folder.telegramId.toString());
-            }
-        }
-    }
-
-    const telegramResponse = await uploadFileToTeleStore(target, filePath);
-    console.log(`Telegram returned: `, `\n Message id: ${telegramResponse.messageId} `, `\n File name: ${originalName}`);
-
-    const stats = fs.statSync(filePath);
-
-    // Save metadata in database
-    const savedFile = await prisma.file.create({
-        data: {
-            name: originalName || "unnamed",
-            mimeType: mimeType || null,
-            telegramMessageId: telegramResponse.messageId,
-            size: stats.size,
-            folderId: folder?.id || null,
-        }
-    });
-
-    console.log(`Saved file in database with ID: ${savedFile.id}`);
-
-    // Create and schedule preview generation job
-    try {
-        await createPreviewJob(savedFile.id);
-        console.log(`Scheduled preview generation job for file: ${savedFile.id}`);
-    } catch (previewErr) {
-        console.error(`⚠️ Failed to schedule preview job for file ${savedFile.id}:`, previewErr);
-    }
-
-    // Cleanup local temp file and directory after upload
-    try {
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-            const parentDir = path.dirname(filePath);
-            if (parentDir.includes("uploads")) {
-                fs.rmdirSync(parentDir);
-            }
-        }
-    } catch (cleanupErr) {
-        console.error("⚠️ Failed to clean up local uploaded file:", cleanupErr);
-    }
-
-    return savedFile;
-};
 
 export const downloadFileService = async (fileId: string) => {
     const fileRecord = await prisma.file.findUnique({

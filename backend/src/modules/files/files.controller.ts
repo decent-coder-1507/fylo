@@ -1,24 +1,6 @@
 import { Request, Response } from "express";
-import { uploadFileService, listFilesService, downloadFileService } from "./files.service";
+import { listFilesService, downloadFileService } from "./files.service";
 
-export const uploadFileController = async (req: Request, res: Response) => {
-    try {
-        const file = req.file;
-
-        if (!file) {
-            return res.status(400).json({ error: "No file uploaded" });
-        }
-
-        const { folderId } = req.body;
-
-        const result = await uploadFileService(file.path, file.originalname, file.mimetype, folderId);
-
-        res.json(result);
-    } catch (error) {
-        console.log("❌ Upload Error:", error);
-        res.status(500).json({ error: "Failed to upload file" })
-    }
-}
 
 export const downloadFileController = async (req: Request, res: Response) => {
     try {

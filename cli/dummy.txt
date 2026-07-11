@@ -1,0 +1,2 @@
+Testing BLAKE3 fingerprinting integrations with the TeleStore Smart Upload Platform.
+BLAKE3 is extremely fast and secure!

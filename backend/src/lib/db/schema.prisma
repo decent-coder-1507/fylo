@@ -30,6 +30,7 @@ model File {
   name     String
   mimeType String?
   size     Int?
+  checksum String?
 
   telegramMessageId Int
   telegramFileId    String?
@@ -48,6 +49,7 @@ model File {
   chunks     FileChunk[]
   shareLinks ShareLink[]
   preview    FilePreview?
+  uploadSession UploadSession?
 
   @@index([name])
 }
@@ -128,4 +130,30 @@ enum PreviewStatus {
   COMPLETED
   FAILED
   SKIPPED
+}
+
+model UploadSession {
+  id        String              @id @default(cuid())
+  fileName  String
+  mimeType  String?
+  size      Int
+  folderId  String?
+  status    UploadSessionStatus @default(CREATED)
+  checksum  String?
+  isChunked Boolean             @default(false)
+  totalChunks Int               @default(0)
+  plan      Json?
+
+  fileId    String? @unique
+  file      File?   @relation(fields: [fileId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UploadSessionStatus {
+  CREATED
+  UPLOADING
+  COMPLETED
+  FAILED
 }

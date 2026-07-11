@@ -9,6 +9,6 @@ dist/
 .session
 
 # Dynamic uploads
-uploads/
+/uploads/
 
 /src/generated/prisma
