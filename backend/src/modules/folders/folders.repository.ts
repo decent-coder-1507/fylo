@@ -36,6 +36,9 @@ export const findFolderById = async (id: string) => {
             files: {
                 orderBy: {
                     createdAt: "desc"
+                },
+                include: {
+                    uploadSession: true
                 }
             }
         }

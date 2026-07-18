@@ -1,0 +1,2 @@
+TeleStore Developer Artifact test content.
+This text file acts as a dummy build target to verify tags, versions, and projects.

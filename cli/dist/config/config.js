@@ -17,24 +17,30 @@ export function getConfigFile() {
  * Loads configuration from disk, creating a default one if none exists.
  */
 export function getConfig() {
+    let baseConfig = DEFAULT_CONFIG;
     try {
         if (!fs.existsSync(CONFIG_DIR)) {
             fs.mkdirSync(CONFIG_DIR, { recursive: true });
         }
-        if (!fs.existsSync(CONFIG_FILE)) {
-            fs.writeFileSync(CONFIG_FILE, JSON.stringify(DEFAULT_CONFIG, null, 2), "utf8");
-            return DEFAULT_CONFIG;
+        if (fs.existsSync(CONFIG_FILE)) {
+            const data = fs.readFileSync(CONFIG_FILE, "utf8");
+            const parsed = JSON.parse(data);
+            baseConfig = {
+                apiUrl: parsed.apiUrl || DEFAULT_CONFIG.apiUrl,
+                token: parsed.token !== undefined ? parsed.token : DEFAULT_CONFIG.token,
+            };
         }
-        const data = fs.readFileSync(CONFIG_FILE, "utf8");
-        const parsed = JSON.parse(data);
-        return {
-            apiUrl: parsed.apiUrl || DEFAULT_CONFIG.apiUrl,
-            token: parsed.token !== undefined ? parsed.token : DEFAULT_CONFIG.token,
-        };
     }
     catch (error) {
-        return DEFAULT_CONFIG;
+        // Ignore read/parse errors, fallback to default
     }
+    // Override with environment variables
+    const envApiUrl = process.env.FYLO_API_URL;
+    const envToken = process.env.FYLO_API_KEY || process.env.FYLO_TOKEN;
+    return {
+        apiUrl: envApiUrl || baseConfig.apiUrl,
+        token: envToken !== undefined ? envToken : baseConfig.token,
+    };
 }
 /**
  * Merges partial config values and persists the config on disk.

@@ -13,6 +13,7 @@ export interface SessionResponse {
     isChunked: boolean;
     totalChunks: number;
     plan?: any;
+    deduplicated: boolean;
     fileId?: string;
     createdAt: string;
     updatedAt: string;
@@ -25,6 +26,7 @@ export interface FileResponse {
     size: number;
     telegramMessageId: number;
     checksum?: string;
+    deduplicated?: boolean;
     createdAt: string;
 }
 
@@ -60,14 +62,13 @@ class ApiClient {
         return res.json();
     }
 
-    /**
-     * Creates an upload session.
-     */
     public async createSession(
         fileName: string,
         size: number,
         mimeType?: string,
-        folderId?: string
+        folderId?: string,
+        checksum?: string,
+        artifactMetadata?: any
     ): Promise<SessionResponse> {
         const url = this.getApiUrl("/uploads/sessions");
         const res = await fetch(url, {
@@ -76,7 +77,7 @@ class ApiClient {
                 "Content-Type": "application/json",
                 ...this.getHeaders(),
             },
-            body: JSON.stringify({ fileName, size, mimeType, folderId }),
+            body: JSON.stringify({ fileName, size, mimeType, folderId, checksum, artifactMetadata }),
         });
         if (!res.ok) {
             const body = await res.json().catch(() => ({}));
@@ -114,13 +115,12 @@ class ApiClient {
         return res.json() as Promise<SessionResponse[]>;
     }
 
-    /**
-     * Performs a direct file upload using FormData.
-     */
     public async uploadFile(
         filePath: string,
         folderId?: string,
-        sessionId?: string
+        sessionId?: string,
+        artifactMetadata?: any,
+        customFileName?: string
     ): Promise<FileResponse> {
         const absolutePath = path.resolve(filePath);
         if (!fs.existsSync(absolutePath)) {
@@ -128,9 +128,9 @@ class ApiClient {
         }
 
         const stats = fs.statSync(absolutePath);
-        const fileName = path.basename(absolutePath);
+        const fileName = customFileName || path.basename(absolutePath);
         const fileBuffer = fs.readFileSync(absolutePath);
-        const blob = new Blob([fileBuffer]);
+        const blob = new Blob([fileBuffer as any]);
 
         const formData = new FormData();
         formData.append("file", blob, fileName);
@@ -139,6 +139,9 @@ class ApiClient {
         }
         if (sessionId) {
             formData.append("sessionId", sessionId);
+        }
+        if (artifactMetadata) {
+            formData.append("artifactMetadata", JSON.stringify(artifactMetadata));
         }
 
         const url = this.getApiUrl("/uploads");
@@ -154,6 +157,162 @@ class ApiClient {
         }
 
         return res.json() as Promise<FileResponse>;
+    }
+
+    /**
+     * Uploads a specific chunk of a session with integrity header.
+     */
+    public async uploadChunk(
+        sessionId: string,
+        index: number,
+        buffer: Buffer,
+        checksum: string
+    ): Promise<any> {
+        const formData = new FormData();
+        const blob = new Blob([buffer as any]);
+        formData.append("chunk", blob, `part-${index}`);
+
+        const url = this.getApiUrl(`/uploads/sessions/${sessionId}/chunks/${index}`);
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "x-chunk-checksum": checksum,
+                ...this.getHeaders(),
+            },
+            body: formData,
+        });
+
+        if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body.error || `Chunk ${index} upload failed (HTTP ${res.status})`);
+        }
+
+        return res.json();
+    }
+
+    /**
+     * Verifies and completes a chunked upload session.
+     */
+    public async verifySession(sessionId: string): Promise<FileResponse> {
+        const url = this.getApiUrl(`/uploads/sessions/${sessionId}/verify`);
+        const res = await fetch(url, {
+            method: "POST",
+            headers: this.getHeaders(),
+        });
+
+        if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body.error || `Session verification failed (HTTP ${res.status})`);
+        }
+
+        return res.json() as Promise<FileResponse>;
+    }
+
+    /**
+     * Retrieves all grouped developer projects.
+     */
+    public async getProjects(): Promise<any[]> {
+        const url = this.getApiUrl("/artifacts/projects");
+        const res = await fetch(url, {
+            headers: this.getHeaders(),
+        });
+        if (!res.ok) {
+            throw new Error(`Failed to fetch projects (HTTP ${res.status})`);
+        }
+        return res.json();
+    }
+
+    /**
+     * Retrieves all versions for a project.
+     */
+    public async getProjectVersions(projectName: string): Promise<any[]> {
+        const url = this.getApiUrl(`/artifacts/projects/${encodeURIComponent(projectName)}/versions`);
+        const res = await fetch(url, {
+            headers: this.getHeaders(),
+        });
+        if (!res.ok) {
+            throw new Error(`Failed to fetch project versions (HTTP ${res.status})`);
+        }
+        return res.json();
+    }
+
+    /**
+     * Retrieves tags summary.
+     */
+    public async getArtifactTags(): Promise<any[]> {
+        const url = this.getApiUrl("/artifacts/tags");
+        const res = await fetch(url, {
+            headers: this.getHeaders(),
+        });
+        if (!res.ok) {
+            throw new Error(`Failed to fetch tags (HTTP ${res.status})`);
+        }
+        return res.json();
+    }
+
+    /**
+     * Gets a folder details including its files.
+     */
+    public async getFolder(folderId: string): Promise<any> {
+        const url = this.getApiUrl(`/folders/${folderId}`);
+        const res = await fetch(url, {
+            headers: this.getHeaders(),
+        });
+        if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body.error || `Failed to retrieve folder details (HTTP ${res.status})`);
+        }
+        return res.json();
+    }
+
+    /**
+     * Creates a new folder.
+     */
+    public async createFolder(name: string): Promise<any> {
+        const url = this.getApiUrl("/folders");
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...this.getHeaders(),
+            },
+            body: JSON.stringify({ name }),
+        });
+        if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body.error || `Failed to create folder (HTTP ${res.status})`);
+        }
+        return res.json();
+    }
+
+    /**
+     * Lists all folders.
+     */
+    public async listFolders(): Promise<any[]> {
+        const url = this.getApiUrl("/folders");
+        const res = await fetch(url, {
+            headers: this.getHeaders(),
+        });
+        if (!res.ok) {
+            throw new Error(`Failed to list folders (HTTP ${res.status})`);
+        }
+        return res.json();
+    }
+
+    /**
+     * Deletes a remote file by ID.
+     */
+    public async deleteFile(fileId: string): Promise<any> {
+        const url = this.getApiUrl(`/files/${fileId}`);
+        const res = await fetch(url, {
+            method: "DELETE",
+            headers: this.getHeaders(),
+        });
+        if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body.error || `Failed to delete file (HTTP ${res.status})`);
+        }
+        return res.json();
     }
 }
 

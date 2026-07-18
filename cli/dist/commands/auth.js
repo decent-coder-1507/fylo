@@ -1,5 +1,6 @@
 import { setConfig, getConfig } from "../config/config.js";
 import { api } from "../api/api-client.js";
+import { logger } from "../utils/logger.js";
 /**
  * Registers authentication-related commands.
  */
@@ -11,14 +12,15 @@ export function registerAuthCommands(program) {
         try {
             // Save the token first
             setConfig({ token });
-            console.log("Connecting to backend to verify connection status...");
+            logger.info("Connecting to backend to verify connection status...");
             const status = await api.checkStatus();
-            console.log("✔ Connection verified successfully!");
-            console.log("Telegram auth status:", status.authenticated ? "Connected" : "Disconnected");
+            logger.output(status, (res) => {
+                console.log("✔ Connection verified successfully!");
+                console.log("Telegram auth status:", res.authenticated ? "Connected" : "Disconnected");
+            });
         }
         catch (err) {
-            console.warn("⚠️ Warning: Saved token, but backend status verification failed.");
-            console.warn(`(Reason: ${err.message})`);
+            logger.warn(`Warning: Saved token, but backend status verification failed. (Reason: ${err.message})`);
         }
     });
     program
@@ -26,7 +28,9 @@ export function registerAuthCommands(program) {
         .description("Remove authentication token from configuration")
         .action(() => {
         setConfig({ token: null });
-        console.log("✔ Authentication token successfully cleared.");
+        logger.output({ cleared: true }, () => {
+            console.log("✔ Authentication token successfully cleared.");
+        });
     });
     program
         .command("whoami")
@@ -34,15 +38,17 @@ export function registerAuthCommands(program) {
         .action(async () => {
         try {
             const config = getConfig();
-            console.log(`Config Base API: ${config.apiUrl}`);
-            console.log(`Token Present:   ${config.token ? "Yes" : "No"}`);
-            console.log("Contacting backend API...");
+            logger.info(`Config Base API: ${config.apiUrl}`);
+            logger.info(`Token Present:   ${config.token ? "Yes" : "No"}`);
+            logger.info("Contacting backend API...");
             const status = await api.checkStatus();
-            console.log("\nBackend Connection Response:");
-            console.log(JSON.stringify(status, null, 2));
+            logger.output(status, (res) => {
+                console.log("\nBackend Connection Response:");
+                console.log(JSON.stringify(res, null, 2));
+            });
         }
         catch (err) {
-            console.error(`❌ Connection failed: ${err.message}`);
+            logger.fatal("Connection failed", err);
         }
     });
 }

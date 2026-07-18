@@ -7,6 +7,8 @@ import {
     createUploadSessionController,
     getUploadSessionController,
     listUploadSessionsController,
+    uploadSessionChunkController,
+    verifyUploadSessionController,
 } from "./uploads.controller";
 
 const router = Router();
@@ -38,5 +40,7 @@ router.post("/upload", upload.single("file"), uploadFileController);
 router.post("/sessions", createUploadSessionController);
 router.get("/sessions", listUploadSessionsController);
 router.get("/sessions/:id", getUploadSessionController);
+router.post("/sessions/:id/chunks/:index", upload.single("chunk"), uploadSessionChunkController);
+router.post("/sessions/:id/verify", verifyUploadSessionController);
 
 export default router;

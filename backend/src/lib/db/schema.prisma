@@ -43,6 +43,16 @@ model File {
   isChunked   Boolean @default(false)
   totalChunks Int     @default(0)
 
+  // Developer Artifact Metadata
+  projectName    String?
+  projectVersion String?
+  commitHash     String?
+  branchName     String?
+  buildEnv       String?
+  tags           String[] @default([])
+  uploaderName   String?
+  uploaderEmail  String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -143,9 +153,20 @@ model UploadSession {
   isChunked Boolean             @default(false)
   totalChunks Int               @default(0)
   plan      Json?
+  deduplicated Boolean         @default(false)
 
   fileId    String? @unique
   file      File?   @relation(fields: [fileId], references: [id], onDelete: SetNull)
+
+  // Developer Artifact Metadata
+  projectName    String?
+  projectVersion String?
+  commitHash     String?
+  branchName     String?
+  buildEnv       String?
+  tags           String[] @default([])
+  uploaderName   String?
+  uploaderEmail  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

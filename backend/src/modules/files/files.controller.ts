@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { listFilesService, downloadFileService } from "./files.service";
+import { listFilesService, downloadFileService, deleteFileService } from "./files.service";
 
 
 export const downloadFileController = async (req: Request, res: Response) => {
@@ -26,11 +26,16 @@ export const listFilesController = async (req: Request, res: Response) => {
         const result = await listFilesService({
             page: parsedPage && !isNaN(parsedPage) ? parsedPage : undefined,
             limit: parsedLimit && !isNaN(parsedLimit) ? parsedLimit : undefined,
-
             folderId: req.query.folderId as string,
-
             search: req.query.search as string,
-
+            projectName: req.query.projectName as string,
+            projectVersion: req.query.projectVersion as string,
+            commitHash: req.query.commitHash as string,
+            branchName: req.query.branchName as string,
+            buildEnv: req.query.buildEnv as string,
+            tags: req.query.tags as string,
+            uploaderName: req.query.uploaderName as string,
+            uploaderEmail: req.query.uploaderEmail as string,
             sortBy: req.query.sortBy as any,
             sortOrder: req.query.sortOrder as any
         });
@@ -42,3 +47,14 @@ export const listFilesController = async (req: Request, res: Response) => {
         res.status(500).json({ error: `Failed to fetch files` })
     }
 }
+
+export const deleteFileController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await deleteFileService(id as string);
+        res.json(result);
+    } catch (error: any) {
+        console.error("❌ Delete File Error:", error);
+        res.status(500).json({ error: error?.message || "Failed to delete file" });
+    }
+};

@@ -71,3 +71,47 @@ export const listFilesService = async (query: ListFilesQuery) => {
     }
     return await findFiles(resolvedQuery);
 };
+
+export const deleteFileService = async (fileId: string) => {
+    const fileRecord = await prisma.file.findUnique({
+        where: { id: fileId },
+        include: { folder: true, chunks: true }
+    });
+
+    if (!fileRecord) {
+        throw new Error("File not found in database");
+    }
+
+    let target: any = "me";
+    if (fileRecord.folder) {
+        const folder = fileRecord.folder;
+        if (folder.accessHash) {
+            target = new Api.InputPeerChannel({
+                channelId: bigInt(folder.telegramId.toString()),
+                accessHash: bigInt(folder.accessHash),
+            });
+        } else {
+            target = bigInt(folder.telegramId.toString());
+        }
+    }
+
+    const messageIds = [fileRecord.telegramMessageId];
+    if (fileRecord.chunks && fileRecord.chunks.length > 0) {
+        for (const chunk of fileRecord.chunks) {
+            messageIds.push(chunk.telegramMessageId);
+        }
+    }
+
+    try {
+        await client.deleteMessages(target, messageIds, { revoke: true });
+        console.log(`Successfully deleted ${messageIds.length} message(s) from Telegram for file: ${fileRecord.name}`);
+    } catch (err) {
+        console.warn(`⚠️ Failed to delete Telegram messages:`, err);
+    }
+
+    await prisma.file.delete({
+        where: { id: fileId }
+    });
+
+    return { success: true };
+};

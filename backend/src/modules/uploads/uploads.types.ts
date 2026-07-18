@@ -1,5 +1,16 @@
 import { File } from "@prisma/client";
 
+export interface ArtifactMetadata {
+    projectName?: string;
+    projectVersion?: string;
+    commitHash?: string;
+    branchName?: string;
+    buildEnv?: string;
+    tags?: string[];
+    uploaderName?: string;
+    uploaderEmail?: string;
+}
+
 /**
  * Payload representing a file upload request.
  */
@@ -10,6 +21,7 @@ export interface UploadPayload {
     size: number;
     folderId?: string;
     sessionId?: string;
+    artifactMetadata?: ArtifactMetadata;
 }
 
 /**
@@ -17,6 +29,7 @@ export interface UploadPayload {
  */
 export interface UploadResult {
     file: File;
+    deduplicated?: boolean;
 }
 
 /**
@@ -53,14 +66,17 @@ export interface UploadMetadata {
 export interface UploadPlan {
     sessionId: string;
     metadata: UploadMetadata;
-    strategy: "DIRECT" | "CHUNKED";
+    strategy: "STANDARD" | "COMPRESSED" | "CHUNKED" | "DUPLICATE_REUSE";
     concurrency: number;
     compression: {
         shouldCompress: boolean;
-        algorithm: "gzip" | null;
+        algorithm: "gzip" | "zip" | null;
         expectedCompressionRatio: number;
+        compressedPath?: string;
     };
     estimatedSize: number;
+    targetFilePath?: string;
+    originalMetadata?: UploadMetadata;
     chunkPlanning: {
         isChunked: boolean;
         chunkSize: number;
@@ -71,6 +87,7 @@ export interface UploadPlan {
             offset: number;
             status: "pending" | "completed" | "failed";
             telegramMessageId?: number;
+            checksum?: string;
         }[];
     };
     
@@ -84,6 +101,7 @@ export interface UploadPlan {
         offset: number;
         status: "pending" | "completed" | "failed";
         telegramMessageId?: number;
+        checksum?: string;
     }[];
 }
 
@@ -101,7 +119,16 @@ export interface UploadSession {
     isChunked: boolean;
     totalChunks: number;
     plan?: UploadPlan;
+    deduplicated: boolean;
     fileId?: string;
     createdAt: Date;
     updatedAt: Date;
+    projectName?: string;
+    projectVersion?: string;
+    commitHash?: string;
+    branchName?: string;
+    buildEnv?: string;
+    tags?: string[];
+    uploaderName?: string;
+    uploaderEmail?: string;
 }

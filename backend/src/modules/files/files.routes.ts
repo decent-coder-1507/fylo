@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listFilesController, downloadFileController } from "./files.controller";
+import { listFilesController, downloadFileController, deleteFileController } from "./files.controller";
 import { 
     getFilePreviewController, 
     getFileThumbnailAssetController, 
@@ -14,6 +14,7 @@ router.use("/upload", uploadsRouter);
 
 router.get("/", listFilesController);
 router.get("/:id/download", downloadFileController);
+router.delete("/:id", deleteFileController);
 
 // File Preview Routes
 router.get("/:id/preview", getFilePreviewController);

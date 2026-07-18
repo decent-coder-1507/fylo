@@ -1,4 +1,3 @@
-// this is mix n match queries for files listing
 export interface ListFilesQuery {
     page?: number;
     limit?: number;
@@ -7,6 +6,16 @@ export interface ListFilesQuery {
 
     search?: string;
 
-    sortBy?: "created_at" | "name" | "size";
+    // Developer Artifact Filters
+    projectName?: string;
+    projectVersion?: string;
+    commitHash?: string;
+    branchName?: string;
+    buildEnv?: string;
+    tags?: string | string[];
+    uploaderName?: string;
+    uploaderEmail?: string;
+
+    sortBy?: "createdAt" | "created_at" | "name" | "size" | "projectName" | "projectVersion";
     sortOrder?: "asc" | "desc";
 }

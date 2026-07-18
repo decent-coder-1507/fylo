@@ -5,6 +5,7 @@ import foldersRoutes from "./modules/folders/folders.routes";
 import authRoutes from "./modules/auth/auth.routes";
 import shareRoutes from "./modules/share/share.routes";
 import uploadsRoutes from "./modules/uploads/uploads.routes";
+import artifactsRoutes from "./modules/artifacts/artifacts.routes";
 
 // Patch BigInt serialization to prevent errors when returning DB objects
 (BigInt.prototype as any).toJSON = function () {
@@ -23,6 +24,7 @@ app.use("/api/folders", foldersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/share", shareRoutes);
 app.use("/api/uploads", uploadsRoutes);
+app.use("/api/artifacts", artifactsRoutes);
 
 
 export default app;

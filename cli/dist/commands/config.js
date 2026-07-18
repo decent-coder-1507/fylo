@@ -1,4 +1,5 @@
 import { getConfig, setConfig, getConfigFile } from "../config/config.js";
+import { logger } from "../utils/logger.js";
 /**
  * Registers configuration-related commands.
  */
@@ -11,8 +12,10 @@ export function registerConfigCommands(program) {
         .description("Show current configuration and config file path")
         .action(() => {
         const config = getConfig();
-        console.log(`Config File: ${getConfigFile()}`);
-        console.log(JSON.stringify(config, null, 2));
+        logger.info(`Config File: ${getConfigFile()}`);
+        logger.output(config, (res) => {
+            console.log(JSON.stringify(res, null, 2));
+        });
     });
     configCmd
         .command("set <key> <value>")
@@ -20,8 +23,7 @@ export function registerConfigCommands(program) {
         .action((key, value) => {
         const allowedKeys = ["apiUrl", "token"];
         if (!allowedKeys.includes(key)) {
-            console.error(`❌ Error: Invalid config key. Allowed keys: ${allowedKeys.join(", ")}`);
-            process.exit(1);
+            logger.fatal(`Invalid config key. Allowed keys: ${allowedKeys.join(", ")}`);
         }
         const updates = {};
         if (key === "apiUrl") {
@@ -31,7 +33,9 @@ export function registerConfigCommands(program) {
             updates.token = value === "null" ? null : value;
         }
         setConfig(updates);
-        console.log(`✔ Config key '${key}' successfully set to '${value}'`);
+        logger.output({ key, value }, () => {
+            console.log(`✔ Config key '${key}' successfully set to '${value}'`);
+        });
     });
     configCmd
         .command("get <key>")
@@ -39,9 +43,11 @@ export function registerConfigCommands(program) {
         .action((key) => {
         const config = getConfig();
         if (!(key in config)) {
-            console.error(`❌ Error: Config key '${key}' does not exist.`);
-            process.exit(1);
+            logger.fatal(`Config key '${key}' does not exist.`);
         }
-        console.log(config[key]);
+        const val = config[key];
+        logger.output({ [key]: val }, () => {
+            console.log(val);
+        });
     });
 }

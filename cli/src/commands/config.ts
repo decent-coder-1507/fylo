@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { getConfig, setConfig, getConfigFile, Config } from "../config/config.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Registers configuration-related commands.
@@ -14,8 +15,10 @@ export function registerConfigCommands(program: Command): void {
         .description("Show current configuration and config file path")
         .action(() => {
             const config = getConfig();
-            console.log(`Config File: ${getConfigFile()}`);
-            console.log(JSON.stringify(config, null, 2));
+            logger.info(`Config File: ${getConfigFile()}`);
+            logger.output(config, (res) => {
+                console.log(JSON.stringify(res, null, 2));
+            });
         });
 
     configCmd
@@ -24,8 +27,7 @@ export function registerConfigCommands(program: Command): void {
         .action((key: string, value: string) => {
             const allowedKeys: Array<keyof Config> = ["apiUrl", "token"];
             if (!allowedKeys.includes(key as any)) {
-                console.error(`❌ Error: Invalid config key. Allowed keys: ${allowedKeys.join(", ")}`);
-                process.exit(1);
+                logger.fatal(`Invalid config key. Allowed keys: ${allowedKeys.join(", ")}`);
             }
 
             const updates: Partial<Config> = {};
@@ -36,7 +38,9 @@ export function registerConfigCommands(program: Command): void {
             }
 
             setConfig(updates);
-            console.log(`✔ Config key '${key}' successfully set to '${value}'`);
+            logger.output({ key, value }, () => {
+                console.log(`✔ Config key '${key}' successfully set to '${value}'`);
+            });
         });
 
     configCmd
@@ -45,9 +49,11 @@ export function registerConfigCommands(program: Command): void {
         .action((key: string) => {
             const config = getConfig();
             if (!(key in config)) {
-                console.error(`❌ Error: Config key '${key}' does not exist.`);
-                process.exit(1);
+                logger.fatal(`Config key '${key}' does not exist.`);
             }
-            console.log((config as any)[key]);
+            const val = (config as any)[key];
+            logger.output({ [key]: val }, () => {
+                console.log(val);
+            });
         });
 }
