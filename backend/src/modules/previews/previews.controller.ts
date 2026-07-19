@@ -61,6 +61,10 @@ export const getFilePreviewController = async (req: Request, res: Response) => {
             previewUrl = `${baseUrl}/api/files/${id}/download`;
         }
 
+        const aiProcessing = await prisma.fileAiProcessing.findUnique({
+            where: { fileId: id },
+        });
+
         return res.json({
             id: preview.id,
             fileId: preview.fileId,
@@ -73,6 +77,15 @@ export const getFilePreviewController = async (req: Request, res: Response) => {
             maxAttempts: preview.maxAttempts,
             startedAt: preview.startedAt,
             completedAt: preview.completedAt,
+            aiProcessing: aiProcessing ? {
+                status: aiProcessing.status,
+                summary: aiProcessing.summary,
+                suggestedTags: aiProcessing.suggestedTags,
+                error: aiProcessing.error,
+                attempts: aiProcessing.attempts,
+                maxAttempts: aiProcessing.maxAttempts,
+                completedAt: aiProcessing.completedAt,
+            } : null,
         });
     } catch (error: any) {
         console.error("❌ Get File Preview Error:", error);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { X, FileText, Download, Loader2, FileQuestion } from "lucide-react";
+import { X, FileText, Download, Loader2, FileQuestion, Sparkles, Tag, CheckCircle2, AlertTriangle, HelpCircle, Cpu } from "lucide-react";
 import { useFilePreview } from "@/hooks/use-file-preview";
 import PreviewLoadingState from "./preview-loading-state";
 import PreviewErrorState from "./preview-error-state";
@@ -248,7 +248,135 @@ export default function FilePreviewModal({
 
         {/* Scrollable Viewport Body */}
         <div className="flex-1 overflow-y-auto p-5 min-h-[40vh]">
-          {renderContent()}
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex-1 min-w-0">
+              {renderContent()}
+            </div>
+
+            {/* AI Insights Sidebar */}
+            {metadata && (
+              <div className="w-full md:w-64 shrink-0 border-t md:border-t-0 md:border-l border-zinc-200 dark:border-zinc-800/80 pt-5 md:pt-0 md:pl-5 space-y-4">
+                <div className="flex items-center gap-2 text-xs font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                  <span>AI Insights</span>
+                </div>
+
+                {metadata.aiProcessing ? (
+                  <div className="space-y-4">
+                    {/* AI Status Badge */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-zinc-550 dark:text-zinc-450 font-medium">Status:</span>
+                      {metadata.aiProcessing.status === "COMPLETED" && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Enriched
+                        </span>
+                      )}
+                      {metadata.aiProcessing.status === "PROCESSING" && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-semibold text-blue-600 dark:text-blue-400 animate-pulse">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          Analyzing...
+                        </span>
+                      )}
+                      {metadata.aiProcessing.status === "PENDING" && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-500/10 border border-zinc-500/20 text-[10px] font-semibold text-zinc-500">
+                          Queued
+                        </span>
+                      )}
+                      {metadata.aiProcessing.status === "FAILED" && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-[10px] font-semibold text-red-650 dark:text-red-400">
+                          <AlertTriangle className="w-3 h-3" />
+                          Failed
+                        </span>
+                      )}
+                      {metadata.aiProcessing.status === "SKIPPED" && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-500/10 border border-zinc-500/20 text-[10px] font-semibold text-zinc-400">
+                          Skipped
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Category & Programming Language */}
+                    {metadata.aiProcessing.status === "COMPLETED" && metadata.aiProcessing.result && (
+                      <div className="grid grid-cols-2 gap-2 text-[11px] p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/10">
+                        <div>
+                          <span className="text-zinc-400 dark:text-zinc-500 font-semibold block uppercase tracking-wider text-[9px] mb-0.5">Category</span>
+                          <span className="font-semibold text-zinc-700 dark:text-zinc-300">{metadata.aiProcessing.result.category}</span>
+                        </div>
+                        <div>
+                          <span className="text-zinc-400 dark:text-zinc-500 font-semibold block uppercase tracking-wider text-[9px] mb-0.5">Language</span>
+                          <span className="font-semibold text-zinc-700 dark:text-zinc-300">{metadata.aiProcessing.result.programmingLanguage}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* AI Summary */}
+                    {metadata.aiProcessing.status === "COMPLETED" && (metadata.aiProcessing.summary || metadata.aiProcessing.result?.summary) && (
+                      <div className="space-y-1.5">
+                        <span className="text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">Summary</span>
+                        <div className="p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 text-xs text-zinc-650 dark:text-zinc-350 leading-relaxed font-medium">
+                          {metadata.aiProcessing.result?.summary || metadata.aiProcessing.summary}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Technologies */}
+                    {metadata.aiProcessing.status === "COMPLETED" && metadata.aiProcessing.result?.technologies && metadata.aiProcessing.result.technologies.length > 0 && (
+                      <div className="space-y-2">
+                        <span className="text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+                          <Cpu className="w-3 h-3 text-indigo-500" />
+                          Technologies
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {metadata.aiProcessing.result.technologies.map((tech) => (
+                            <span
+                              key={tech}
+                              className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 text-[10px] font-medium text-indigo-650 dark:text-indigo-400"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Suggested Tags */}
+                    {metadata.aiProcessing.status === "COMPLETED" && ((metadata.aiProcessing.suggestedTags && metadata.aiProcessing.suggestedTags.length > 0) || (metadata.aiProcessing.result?.tags && metadata.aiProcessing.result.tags.length > 0)) && (
+                      <div className="space-y-2">
+                        <span className="text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+                          <Tag className="w-3 h-3 text-emerald-500" />
+                          Suggested Tags
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {(metadata.aiProcessing.result?.tags || metadata.aiProcessing.suggestedTags).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-medium text-zinc-650 dark:text-zinc-400"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Error message */}
+                    {metadata.aiProcessing.status === "FAILED" && metadata.aiProcessing.error && (
+                      <div className="p-3 rounded-lg border border-red-200 dark:border-red-900/50 bg-red-500/[0.02] text-xs text-red-650 dark:text-red-400 leading-normal">
+                        {metadata.aiProcessing.error}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-6 text-center text-zinc-400 dark:text-zinc-500">
+                    <HelpCircle className="w-8 h-8 stroke-[1.5] mb-2" />
+                    <span className="text-xs font-semibold">Not Processed</span>
+                    <span className="text-[10px] max-w-[150px] mt-1 leading-normal">No AI processing history found for this file.</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

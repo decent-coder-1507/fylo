@@ -82,6 +82,7 @@ export const findFiles = async (query: ListFilesQuery) => {
 
             include: {
                 folder: true,
+                aiProcessing: true,
             },
         }),
 

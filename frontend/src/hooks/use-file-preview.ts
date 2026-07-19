@@ -1,6 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/app/lib/axios";
 
+export interface AiProcessingData {
+  status: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "SKIPPED";
+  summary: string | null;
+  suggestedTags: string[];
+  error: string | null;
+  attempts: number;
+  maxAttempts: number;
+  completedAt: string | null;
+  result: {
+    summary: string;
+    shortSummary: string;
+    tags: string[];
+    technologies: string[];
+    category: string;
+    programmingLanguage: string;
+  } | null;
+}
+
 export interface PreviewMetadataResponse {
   id: string;
   fileId: string;
@@ -11,6 +29,7 @@ export interface PreviewMetadataResponse {
   error: string | null;
   attempts: number;
   maxAttempts: number;
+  aiProcessing: AiProcessingData | null;
 }
 
 export interface TextPreviewResponse {
@@ -31,8 +50,9 @@ export function useFilePreview(fileId: string, isOpen: boolean) {
     enabled: isOpen && !!fileId,
     refetchInterval: (query) => {
       const data = query.state.data;
-      // Poll every 2 seconds if status is PENDING or PROCESSING
-      return data?.status === "PENDING" || data?.status === "PROCESSING" ? 2000 : false;
+      const isPreviewPending = data?.status === "PENDING" || data?.status === "PROCESSING";
+      const isAiPending = data?.aiProcessing?.status === "PENDING" || data?.aiProcessing?.status === "PROCESSING";
+      return isPreviewPending || isAiPending ? 2000 : false;
     },
   });
 

@@ -1,6 +1,7 @@
 import prisma from "../../lib/db/prisma";
 import { findFiles } from "./files.repository";
 import { ListFilesQuery } from "./files.types";
+import { globalAiService, globalVectorStore } from "../ai";
 import { Api } from "telegram";
 import bigInt from "big-integer";
 import { client } from "../../lib/telegram/client";
@@ -109,9 +110,170 @@ export const deleteFileService = async (fileId: string) => {
         console.warn(`⚠️ Failed to delete Telegram messages:`, err);
     }
 
+    // Clean up vector embedding in Qdrant to ensure vector database consistency
+    try {
+        await globalVectorStore.delete(fileId);
+        console.log(`Successfully deleted vector embedding for file: ${fileId}`);
+    } catch (err) {
+        console.warn(`⚠️ Failed to delete vector embedding from Qdrant:`, err);
+    }
+
     await prisma.file.delete({
         where: { id: fileId }
     });
 
     return { success: true };
+};
+
+export interface SearchFilesQuery {
+    query: string;
+    mode?: "semantic" | "keyword" | "hybrid";
+    folderId?: string;
+    limit?: number;
+    minScore?: number;
+}
+
+export interface SearchFilesResponse {
+    files: any[];
+    mode: "semantic" | "keyword" | "hybrid";
+    count: number;
+}
+
+export const searchFilesService = async (params: SearchFilesQuery): Promise<SearchFilesResponse> => {
+    const { query, mode = "semantic", folderId, limit = 10, minScore = 0.2 } = params;
+
+    if (!query || query.trim() === "") {
+        return { files: [], mode: mode as any, count: 0 };
+    }
+
+    let semanticResults: Array<{ id: string; score: number; payload: any }> = [];
+
+    // 1. Vector Search (Semantic)
+    if (mode === "semantic" || mode === "hybrid") {
+        try {
+            console.log(`🔍 [SearchService] Generating query embedding for: "${query}"`);
+            const embeddingResponse = await globalAiService.embed({ text: query });
+            const queryVector = embeddingResponse.values;
+
+            console.log(`🔍 [SearchService] Searching vector DB...`);
+            const filter = folderId ? {
+                must: [
+                    {
+                        key: "folderId",
+                        match: { value: folderId }
+                    }
+                ]
+            } : undefined;
+
+            semanticResults = await globalVectorStore.search(queryVector, {
+                limit: limit * 2,
+                filter
+            });
+        } catch (err) {
+            console.error("⚠️ [SearchService] Vector search failed:", err);
+            if (mode === "semantic") {
+                console.log("🔄 [SearchService] Falling back to keyword search due to vector error.");
+                return searchFilesService({ ...params, mode: "keyword" });
+            }
+        }
+    }
+
+    // 2. Keyword Search
+    let keywordResults: any[] = [];
+    if (mode === "keyword" || mode === "hybrid") {
+        const listQueryResults = await findFiles({
+            search: query,
+            folderId,
+            limit: limit * 2,
+        });
+        keywordResults = listQueryResults.files;
+    }
+
+    // 3. Merging & Ranking (Supports future Hybrid search)
+    let finalFilesWithScores: Array<{ file: any; score: number }> = [];
+
+    if (mode === "semantic") {
+        const fileIds = semanticResults.map(r => r.id);
+        const files = await prisma.file.findMany({
+            where: { id: { in: fileIds } },
+            include: { folder: true, aiProcessing: true }
+        });
+
+        const queryTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+        finalFilesWithScores = files.map(file => {
+            const vectorResult = semanticResults.find(r => r.id === file.id);
+            let score = vectorResult?.score ?? 0;
+
+            if (file.name.toLowerCase() === query.toLowerCase()) {
+                score += 0.20;
+            } else {
+                const nameLower = file.name.toLowerCase();
+                let matches = 0;
+                for (const term of queryTerms) {
+                    if (nameLower.includes(term)) matches++;
+                }
+                if (matches > 0) {
+                    score += 0.05 * (matches / queryTerms.length);
+                }
+            }
+
+            const tagsLower = file.tags.map(t => t.toLowerCase());
+            for (const term of queryTerms) {
+                if (tagsLower.includes(term)) {
+                    score += 0.05;
+                }
+            }
+
+            return {
+                file,
+                score: Math.min(score, 1.0)
+            };
+        }).filter(r => r.score >= minScore);
+
+        finalFilesWithScores.sort((a, b) => b.score - a.score);
+    } else if (mode === "keyword") {
+        finalFilesWithScores = keywordResults.map(file => ({
+            file,
+            score: 1.0
+        }));
+    } else if (mode === "hybrid") {
+        const fileMap = new Map<string, { file: any; score: number }>();
+
+        keywordResults.forEach((file, index) => {
+            const keywordScore = 1 / (index + 1);
+            fileMap.set(file.id, { file, score: keywordScore * 0.5 });
+        });
+
+        const semanticIds = semanticResults.map(r => r.id);
+        const semanticFiles = await prisma.file.findMany({
+            where: { id: { in: semanticIds } },
+            include: { folder: true, aiProcessing: true }
+        });
+
+        semanticFiles.forEach(file => {
+            const vectorResult = semanticResults.find(r => r.id === file.id);
+            const vectorScore = vectorResult?.score ?? 0;
+            
+            const existing = fileMap.get(file.id);
+            if (existing) {
+                existing.score = existing.score + (vectorScore * 0.5);
+            } else {
+                fileMap.set(file.id, { file, score: vectorScore * 0.5 });
+            }
+        });
+
+        finalFilesWithScores = Array.from(fileMap.values()).filter(r => r.score >= minScore);
+        finalFilesWithScores.sort((a, b) => b.score - a.score);
+    }
+
+    const paginatedResults = finalFilesWithScores.slice(0, limit);
+
+    return {
+        files: paginatedResults.map(r => ({
+            ...r.file,
+            searchScore: r.score
+        })),
+        mode,
+        count: paginatedResults.length
+    };
 };

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { listFilesController, downloadFileController, deleteFileController } from "./files.controller";
+import { listFilesController, downloadFileController, deleteFileController, searchFilesController } from "./files.controller";
 import { 
     getFilePreviewController, 
     getFileThumbnailAssetController, 
@@ -12,6 +12,7 @@ const router = Router();
 // Delegate uploads to the new uploads router
 router.use("/upload", uploadsRouter);
 
+router.get("/search", searchFilesController);
 router.get("/", listFilesController);
 router.get("/:id/download", downloadFileController);
 router.delete("/:id", deleteFileController);

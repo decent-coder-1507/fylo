@@ -38,7 +38,8 @@ export const findFolderById = async (id: string) => {
                     createdAt: "desc"
                 },
                 include: {
-                    uploadSession: true
+                    uploadSession: true,
+                    aiProcessing: true,
                 }
             }
         }

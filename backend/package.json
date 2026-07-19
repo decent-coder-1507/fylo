@@ -8,6 +8,7 @@
     "dev": "tsx watch src/server.ts",
     "telegram:login": "tsx src/lib/telegram/login.ts",
     "previews:worker": "tsx src/modules/previews/preview.worker.ts",
+    "ai:worker": "tsx src/modules/ai-processing/ai-processing.worker.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,10 +17,12 @@
   "type": "module",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1064.0",
+    "@google/genai": "^2.12.0",
     "@napi-rs/canvas": "^1.0.0",
     "@noble/hashes": "^2.2.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@qdrant/js-client-rest": "^1.18.0",
     "amqplib": "^2.0.1",
     "archiver": "^8.0.0",
     "cloudinary": "^2.10.0",

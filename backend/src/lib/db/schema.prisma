@@ -59,6 +59,7 @@ model File {
   chunks     FileChunk[]
   shareLinks ShareLink[]
   preview    FilePreview?
+  aiProcessing FileAiProcessing?
   uploadSession UploadSession?
 
   @@index([name])
@@ -132,6 +133,38 @@ model FilePreview {
   updatedAt   DateTime  @updatedAt
 
   @@index([status])
+}
+
+model FileAiProcessing {
+  id String @id @default(cuid())
+
+  fileId String @unique
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  status AiProcessingStatus @default(PENDING)
+  summary String?
+  extractedText String?
+  extractionMetadata Json?
+  suggestedTags String[] @default([])
+  result Json?
+  error String?
+
+  attempts Int @default(0)
+  maxAttempts Int @default(3)
+  startedAt DateTime?
+  completedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+enum AiProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  SKIPPED
 }
 
 enum PreviewStatus {

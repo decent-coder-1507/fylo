@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { listFilesService, downloadFileService, deleteFileService } from "./files.service";
+import { listFilesService, downloadFileService, deleteFileService, searchFilesService } from "./files.service";
 
 
 export const downloadFileController = async (req: Request, res: Response) => {
@@ -45,6 +45,29 @@ export const listFilesController = async (req: Request, res: Response) => {
         console.log(`❌ List files error: ${err}`)
 
         res.status(500).json({ error: `Failed to fetch files` })
+    }
+}
+
+export const searchFilesController = async (req: Request, res: Response) => {
+    try {
+        const query = req.query.query as string;
+        const mode = req.query.mode as any;
+        const folderId = req.query.folderId as string;
+        const parsedLimit = req.query.limit ? Number(req.query.limit) : undefined;
+        const parsedMinScore = req.query.minScore ? Number(req.query.minScore) : undefined;
+
+        const result = await searchFilesService({
+            query,
+            mode,
+            folderId,
+            limit: parsedLimit && !isNaN(parsedLimit) ? parsedLimit : undefined,
+            minScore: parsedMinScore && !isNaN(parsedMinScore) ? parsedMinScore : undefined,
+        });
+
+        res.json(result);
+    } catch (err: any) {
+        console.error("❌ Search Files Error:", err);
+        res.status(500).json({ error: err?.message || "Failed to search files" });
     }
 }
 

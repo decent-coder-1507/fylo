@@ -7,6 +7,7 @@ import { createPreviewJob } from "../previews/previews.service";
 import { globalRetryEngine } from "./retry.engine";
 import { TelegramUploadProvider } from "./providers/telegram.provider";
 import { globalChecksumService } from "./checksum.service";
+import { scheduleAiProcessing } from "../ai-processing/ai-processing.service";
 
 /**
  * Controller endpoint for handling direct file uploads.
@@ -276,6 +277,8 @@ export const verifyUploadSessionController = async (req: Request, res: Response)
         } catch (previewErr) {
             console.error(`⚠️ [VerifySession] Failed to schedule preview job:`, previewErr);
         }
+
+        scheduleAiProcessing(savedFile.id);
 
         res.json({
             ...savedFile,

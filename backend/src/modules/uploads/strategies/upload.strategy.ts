@@ -4,6 +4,7 @@ import { resolveTelegramTarget } from "../uploads.utils";
 import { createPreviewJob } from "../../previews/previews.service";
 import { globalUploadSessionService } from "../uploads.session";
 import { globalRetryEngine } from "../retry.engine";
+import { scheduleAiProcessing } from "../../ai-processing/ai-processing.service";
 
 export interface IUploadStrategy {
     execute(
@@ -92,6 +93,7 @@ export class DuplicateReuseStrategy implements IUploadStrategy {
             }
         }
 
+        scheduleAiProcessing(savedFile.id);
         return { file: savedFile, deduplicated: true };
     }
 }
@@ -148,6 +150,7 @@ export class StandardUploadStrategy implements IUploadStrategy {
             console.error(`⚠️ [StandardUploadStrategy] Failed to schedule preview job:`, previewErr);
         }
 
+        scheduleAiProcessing(savedFile.id);
         return { file: savedFile, deduplicated: false };
     }
 }
@@ -205,6 +208,7 @@ export class CompressedUploadStrategy implements IUploadStrategy {
             console.error(`⚠️ [CompressedUploadStrategy] Failed to schedule preview job:`, previewErr);
         }
 
+        scheduleAiProcessing(savedFile.id);
         return { file: savedFile, deduplicated: false };
     }
 }
@@ -262,6 +266,7 @@ export class ChunkedUploadStrategy implements IUploadStrategy {
             console.error(`⚠️ [ChunkedUploadStrategy] Failed to schedule preview job:`, previewErr);
         }
 
+        scheduleAiProcessing(savedFile.id);
         return { file: savedFile, deduplicated: false };
     }
 }
