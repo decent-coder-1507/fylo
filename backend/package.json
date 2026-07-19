@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx src/server.ts",
+    "start": "concurrently --kill-others -n \"api,preview,ai\" -c \"blue,green,magenta\" \"tsx src/server.ts\" \"tsx src/modules/previews/preview.worker.ts\" \"tsx src/modules/ai-processing/ai-processing.worker.ts\"",
     "dev": "tsx watch src/server.ts",
     "telegram:login": "tsx src/lib/telegram/login.ts",
     "previews:worker": "tsx watch src/modules/previews/preview.worker.ts",
@@ -26,6 +26,7 @@
     "amqplib": "^2.0.1",
     "archiver": "^8.0.0",
     "cloudinary": "^2.10.0",
+    "concurrently": "^10.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

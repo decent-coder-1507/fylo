@@ -16,7 +16,7 @@ import chatRoutes from "./modules/chat/chat.routes";
 
 const app = express();
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:3000",
     credentials: true,
 })); // Allow requests from frontend with credentials
 app.use(express.json());
