@@ -48,3 +48,22 @@ export const createShareLink = async (
     return res.data;
 };
 
+export const searchFiles = async (
+    query: string,
+    mode: "semantic" | "keyword" | "hybrid" = "semantic",
+    folderId?: string,
+    limit?: number,
+    minScore?: number
+) => {
+    const res = await api.get("/files/search", {
+        params: {
+            query,
+            mode,
+            folderId,
+            limit,
+            minScore,
+        },
+    });
+    return res.data;
+};
+

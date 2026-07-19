@@ -37,7 +37,7 @@ export default function TextPreview({ content, isTruncated }: TextPreviewProps) 
             onClick={() => setLineWrap(!lineWrap)}
             className={`h-7 px-2.5 rounded-lg border text-[10px] font-medium transition-all flex items-center gap-1 cursor-pointer ${
               lineWrap
-                ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-750 text-zinc-900 dark:text-zinc-200"
+                ? "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-200"
                 : "border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
             }`}
             title="Toggle Line Wrap"
@@ -66,9 +66,9 @@ export default function TextPreview({ content, isTruncated }: TextPreviewProps) 
       </div>
 
       {/* Content panel */}
-      <div className="relative w-full h-[55vh] rounded-xl border border-zinc-200 dark:border-zinc-850/60 bg-zinc-50 dark:bg-zinc-955/20 overflow-hidden flex font-mono text-[11px] leading-relaxed">
+      <div className="relative w-full h-[55vh] rounded-xl border border-zinc-200 dark:border-zinc-800/60 bg-zinc-50 dark:bg-zinc-900/20 overflow-hidden flex font-mono text-[11px] leading-relaxed">
         {/* Line numbers gutter */}
-        <div className="select-none text-right pr-3 pl-2 py-3 bg-zinc-100/50 dark:bg-zinc-900/30 border-r border-zinc-250/50 dark:border-zinc-800/40 text-zinc-400 dark:text-zinc-600 min-w-8">
+        <div className="select-none text-right pr-3 pl-2 py-3 bg-zinc-100/50 dark:bg-zinc-900/30 border-r border-zinc-200/50 dark:border-zinc-800/40 text-zinc-400 dark:text-zinc-600 min-w-8">
           {lines.map((_, i) => (
             <div key={i}>{i + 1}</div>
           ))}

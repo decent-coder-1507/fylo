@@ -9,6 +9,29 @@ export class QdrantVectorStore implements VectorStore {
         if (this.initialized) return;
         // Default gemini-embedding-2 generates 3072-dimension vectors
         await ensureQdrantCollection(this.collectionName, 3072);
+        
+        // Ensure payload index for folderId
+        try {
+            await qdrantClient.createPayloadIndex(this.collectionName, {
+                field_name: "folderId",
+                field_schema: "keyword",
+            });
+            console.log(`✅ [Qdrant] Payload index for "folderId" ensured successfully.`);
+        } catch (err: any) {
+            console.log(`ℹ️ [Qdrant] folderId payload index verification: ${err.message || err}`);
+        }
+
+        // Ensure payload index for fileId
+        try {
+            await qdrantClient.createPayloadIndex(this.collectionName, {
+                field_name: "fileId",
+                field_schema: "keyword",
+            });
+            console.log(`✅ [Qdrant] Payload index for "fileId" ensured successfully.`);
+        } catch (err: any) {
+            console.log(`ℹ️ [Qdrant] fileId payload index verification: ${err.message || err}`);
+        }
+        
         this.initialized = true;
     }
 

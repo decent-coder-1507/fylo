@@ -9,7 +9,7 @@ import {
 import { ChatRequest } from "./chat.types";
 
 export const chatService = async (params: ChatRequest): Promise<ChatResponseOutput> => {
-    const { query, folderId, limit = 5 } = params;
+    const { query, folderId, fileId, limit = 5 } = params;
 
     if (!query || query.trim() === "") {
         return {
@@ -26,7 +26,14 @@ export const chatService = async (params: ChatRequest): Promise<ChatResponseOutp
 
     // 2. Retrieve context documents from Qdrant Vector DB
     console.log(`💬 [ChatService] Fetching matching vectors from Qdrant...`);
-    const filter = folderId ? {
+    const filter = fileId ? {
+        must: [
+            {
+                key: "fileId",
+                match: { value: fileId }
+            }
+        ]
+    } : folderId ? {
         must: [
             {
                 key: "folderId",

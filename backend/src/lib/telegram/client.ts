@@ -427,6 +427,34 @@ async function connectWithFallback(): Promise<void> {
     throw new Error("🔴 Telegram connection failed: Direct connection and all tested SOCKS5/MTProto proxies were unreachable.");
 }
 
+let connectionMonitorInterval: NodeJS.Timeout | null = null;
+
+function startConnectionMonitor() {
+    if (connectionMonitorInterval) return;
+
+    connectionMonitorInterval = setInterval(async () => {
+        if (activeClient && !activeClient.connected) {
+            console.warn("⚠️ Telegram client disconnected in background. Triggering self-healing fallback reconnect...");
+            try {
+                stopConnectionMonitor();
+                await connectWithFallback();
+                startConnectionMonitor();
+            } catch (err: any) {
+                console.error("❌ Self-healing reconnection failed:", err.message || err);
+                // Restart monitor so it can try again later
+                startConnectionMonitor();
+            }
+        }
+    }, 15000); // Check every 15 seconds
+}
+
+function stopConnectionMonitor() {
+    if (connectionMonitorInterval) {
+        clearInterval(connectionMonitorInterval);
+        connectionMonitorInterval = null;
+    }
+}
+
 // JS Proxy wrapper for the client singleton
 export const client = new Proxy({}, {
     get(target, prop, receiver) {
@@ -436,7 +464,21 @@ export const client = new Proxy({}, {
         
         // Intercept connect method
         if (prop === 'connect') {
-            return connectWithFallback;
+            return async (...args: any[]) => {
+                const result = await connectWithFallback();
+                startConnectionMonitor();
+                return result;
+            };
+        }
+
+        // Intercept disconnect method
+        if (prop === 'disconnect') {
+            return async (...args: any[]) => {
+                stopConnectionMonitor();
+                if (activeClient) {
+                    return await activeClient.disconnect(...args);
+                }
+            };
         }
 
         // Helper properties for diagnostics

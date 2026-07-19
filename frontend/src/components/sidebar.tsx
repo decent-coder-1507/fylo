@@ -46,7 +46,8 @@ export default function Sidebar({ children }: SidebarProps) {
 
   const menuItems = [
     { name: "Dashboard", href: "/dashboard", icon: Layers },
-    // Folders details routes can still fall under "Dashboard" or general explorer
+    { name: "Semantic Search", href: "/search", icon: HardDrive },
+    { name: "AI Chat Assistant", href: "/chat", icon: MessageCircle },
   ];
 
   return (
@@ -157,7 +158,7 @@ export default function Sidebar({ children }: SidebarProps) {
               </span>
             </div>
             <p className="text-[10px] text-zinc-500 dark:text-zinc-500 leading-normal">
-              Powered by Telegram channels. Upload sizes up to 2GB per file.
+              Utilizes secure decentralized storage. Upload sizes up to 2GB per file.
             </p>
           </div>
 
@@ -269,7 +270,7 @@ export default function Sidebar({ children }: SidebarProps) {
                 </span>
               </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-500 leading-normal">
-                Powered by Telegram channels. Upload sizes up to 2GB per file.
+                Utilizes secure decentralized storage. Upload sizes up to 2GB per file.
               </p>
             </div>
           </div>

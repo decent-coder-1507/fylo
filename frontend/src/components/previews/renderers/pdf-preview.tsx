@@ -23,7 +23,7 @@ export default function PdfPreview({ previewUrl, fullPdfUrl, name }: PdfPreviewP
           href={fullPdfUrl}
           target="_blank"
           rel="noreferrer"
-          className="text-[10px] font-semibold text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-zinc-200 flex items-center gap-1 cursor-pointer transition-colors"
+          className="text-[10px] font-semibold text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 flex items-center gap-1 cursor-pointer transition-colors"
         >
           Open Full Document
           <ExternalLink className="w-3 h-3" />
@@ -50,7 +50,7 @@ export default function PdfPreview({ previewUrl, fullPdfUrl, name }: PdfPreviewP
       {/* Browser native fallback prompt */}
       <div className="flex items-center gap-2 p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950/20 border border-zinc-100 dark:border-zinc-900 text-left">
         <FileText className="w-4 h-4 text-zinc-400 dark:text-zinc-600 shrink-0" />
-        <p className="text-[10px] leading-normal text-zinc-550 dark:text-zinc-400">
+        <p className="text-[10px] leading-normal text-zinc-500 dark:text-zinc-400">
           Viewing first-page preview. To read, search, or print the full multi-page document, please click <strong>Open Full Document</strong>.
         </p>
       </div>

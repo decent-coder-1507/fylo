@@ -7,8 +7,8 @@
     "start": "tsx src/server.ts",
     "dev": "tsx watch src/server.ts",
     "telegram:login": "tsx src/lib/telegram/login.ts",
-    "previews:worker": "tsx src/modules/previews/preview.worker.ts",
-    "ai:worker": "tsx src/modules/ai-processing/ai-processing.worker.ts",
+    "previews:worker": "tsx watch src/modules/previews/preview.worker.ts",
+    "ai:worker": "tsx watch src/modules/ai-processing/ai-processing.worker.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

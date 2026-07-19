@@ -118,7 +118,7 @@ export default function ShareLinkModal({
                   onClick={(e) => (e.target as HTMLInputElement).select()}
                   className="w-full h-10 px-3 pr-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 text-xs text-zinc-700 dark:text-zinc-300 outline-none select-all truncate font-mono"
                 />
-                <Globe className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-zinc-400 dark:text-zinc-650 pointer-events-none" />
+                <Globe className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-zinc-400 dark:text-zinc-500 pointer-events-none" />
               </div>
               <button
                 onClick={handleCopy}
@@ -148,7 +148,7 @@ export default function ShareLinkModal({
                 <select
                   value={expiryHours}
                   onChange={(e) => setExpiryHours(Number(e.target.value))}
-                  className="w-full h-9 px-2 text-xs rounded-lg border border-zinc-200 dark:border-zinc-850 bg-white dark:bg-zinc-950/40 text-zinc-700 dark:text-zinc-300 outline-none focus:border-zinc-355 transition-colors cursor-pointer"
+                  className="w-full h-9 px-2 text-xs rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/40 text-zinc-700 dark:text-zinc-300 outline-none focus:border-blue-500 transition-colors cursor-pointer"
                 >
                   <option value={24}>1 Day (24h)</option>
                   <option value={168}>7 Days (1 Week)</option>
@@ -168,7 +168,7 @@ export default function ShareLinkModal({
                   value={maxUses}
                   onChange={(e) => setMaxUses(e.target.value)}
                   min="1"
-                  className="w-full h-9 px-3 text-xs rounded-lg border border-zinc-200 dark:border-zinc-850 bg-white dark:bg-zinc-950/40 text-zinc-700 dark:text-zinc-300 outline-none placeholder-zinc-400 dark:placeholder-zinc-600 focus:border-zinc-355 transition-colors font-mono"
+                  className="w-full h-9 px-3 text-xs rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/40 text-zinc-700 dark:text-zinc-300 outline-none placeholder-zinc-400 dark:placeholder-zinc-600 focus:border-blue-500 transition-colors font-mono"
                 />
               </div>
 

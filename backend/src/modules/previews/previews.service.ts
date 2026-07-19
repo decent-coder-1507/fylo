@@ -16,6 +16,24 @@ import bigInt from "big-integer";
  * @returns The created FilePreview record
  */
 export const createPreviewJob = async (fileId: string) => {
+    // Fetch file to check if it is a text file
+    const fileRecord = await prisma.file.findUnique({
+        where: { id: fileId }
+    });
+
+    const isText = fileRecord
+        ? getTextFileTypeInfo(fileRecord.mimeType, fileRecord.name).isText
+        : false;
+
+    if (isText) {
+        // Text-based files don't need background processing; they are served on-demand.
+        // Mark as COMPLETED immediately with null urls (meaning text-based content).
+        return await createPreview({
+            fileId,
+            status: PreviewStatus.COMPLETED,
+        });
+    }
+
     // 1. Create the database record representing the preview job
     const preview = await createPreview({
         fileId,
@@ -100,7 +118,26 @@ export const getOrCreateFilePreview = async (fileId: string) => {
     // 2. Fetch the preview record
     let preview = await getPreviewByFileId(fileId);
 
-    // 3. If no preview record exists, start a new preview generation job on-demand
+    // 3. Check if it's a text/code file to mark it completed instantly
+    const fileTypeInfo = getTextFileTypeInfo(fileRecord.mimeType, fileRecord.name);
+    if (fileTypeInfo.isText) {
+        if (!preview) {
+            console.log(`[PreviewService] Text file ${fileId} has no preview record. Creating COMPLETED.`);
+            preview = await createPreview({
+                fileId,
+                status: PreviewStatus.COMPLETED
+            });
+        } else if (preview.status !== PreviewStatus.COMPLETED) {
+            console.log(`[PreviewService] Text file ${fileId} has non-completed status (${preview.status}). Upgrading to COMPLETED.`);
+            preview = await prisma.filePreview.update({
+                where: { fileId },
+                data: { status: PreviewStatus.COMPLETED }
+            });
+        }
+        return preview;
+    }
+
+    // 4. If no preview record exists for non-text file, start a new preview generation job on-demand
     if (!preview) {
         console.log(`[PreviewService] No preview record found for file ${fileId}. Spawning new preview job.`);
         preview = await createPreviewJob(fileId);

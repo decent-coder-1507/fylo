@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fylo — Modern File Storage Solution powered by TG Cloud",
-  description: "A fast, secure, and beautiful cloud storage dashboard powered by Telegram's server storage infrastructure.",
+  title: "Fylo — Self-Sovereign Decentralized Cloud Storage",
+  description: "A fast, secure, and beautiful cloud storage dashboard powered by decentralized storage protocols.",
   icons: {
     icon: "/fylo-stack-design-logo-removebg-preview.png",
   },

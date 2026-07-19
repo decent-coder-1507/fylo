@@ -142,7 +142,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
   const handleDownload = () => {
     if (!fileInfo) return;
     setIsDownloading(true);
-    toast.info("Downloading file from Telegram...");
+    toast.info("Downloading file from secure cloud node...");
 
     // Redirect user to backend download url
     window.location.href = fileInfo.downloadUrl;
@@ -285,7 +285,7 @@ export default function ShareLandingPage({ params }: SharePageProps) {
             {fileInfo.maxUses && (
               <div className="p-3 rounded-xl border border-zinc-100 dark:border-zinc-900 bg-zinc-50/30 dark:bg-zinc-950/10 flex items-center justify-between text-xs">
                 <span className="text-zinc-500">Download Limit</span>
-                <span className="font-mono font-bold text-zinc-700 dark:text-zinc-350">
+                <span className="font-mono font-bold text-zinc-700 dark:text-zinc-300">
                   {fileInfo.useCount} / {fileInfo.maxUses} uses
                 </span>
               </div>
@@ -313,8 +313,8 @@ export default function ShareLandingPage({ params }: SharePageProps) {
 
           {/* Footer security badge */}
           <div className="p-4 bg-zinc-50/40 dark:bg-zinc-950/20 border-t border-zinc-150 dark:border-zinc-800/40 text-center">
-            <span className="text-[9px] text-zinc-450 dark:text-zinc-550 leading-relaxed max-w-[280px] inline-block">
-              Downloads are processed directly using Telegram server cloud channels. Bypassed auth, public landing page.
+            <span className="text-[9px] text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] inline-block">
+              Downloads are processed securely from self-sovereign cloud nodes. Authentication bypassed for public shared access.
             </span>
           </div>
 
@@ -322,8 +322,8 @@ export default function ShareLandingPage({ params }: SharePageProps) {
       </main>
 
       {/* Page footer */}
-      <footer className="w-full text-center py-6 text-[10px] text-zinc-400 dark:text-zinc-650 z-10">
-        © 2026 Fylo Inc. Powered by Telegram.
+      <footer className="w-full text-center py-6 text-[10px] text-zinc-400 dark:text-zinc-500 z-10">
+        © 2026 Fylo Inc. Storage Sovereignty for all.
       </footer>
     </div>
   );

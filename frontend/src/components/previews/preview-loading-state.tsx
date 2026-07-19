@@ -43,7 +43,7 @@ export default function PreviewLoadingState({
       </div>
 
       <div className="space-y-2 max-w-sm">
-        <h4 className="text-sm font-semibold text-zinc-850 dark:text-zinc-200">
+        <h4 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
           {message.title}
         </h4>
         <p className="text-xs text-zinc-500 leading-relaxed">
@@ -53,8 +53,8 @@ export default function PreviewLoadingState({
 
       {status === "PROCESSING" && (
         <div className="flex gap-2 p-3 rounded-lg bg-zinc-50 dark:bg-zinc-950/20 border border-zinc-100 dark:border-zinc-900 max-w-xs text-left">
-          <Info className="w-4 h-4 text-zinc-400 dark:text-zinc-650 shrink-0 mt-0.5" />
-          <p className="text-[10px] leading-normal text-zinc-500 dark:text-zinc-550">
+          <Info className="w-4 h-4 text-zinc-400 dark:text-zinc-500 shrink-0 mt-0.5" />
+          <p className="text-[10px] leading-normal text-zinc-500 dark:text-zinc-400">
             For larger files, it may take several seconds to transcode or read the data.
           </p>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { FileItem } from "@/types/file.types";
-import { downloadFile } from "@/services/files.services";
+import { downloadFile, searchFiles } from "@/services/files.services";
 import {
   FileText,
   Image as ImageIcon,
@@ -19,6 +19,7 @@ import {
   Loader2,
   Share2,
   Eye,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import EmptyState from "./empty-state";
@@ -45,8 +46,8 @@ const formatBytes = (bytes?: number, decimals = 2) => {
 };
 
 // Helper to get file icon and Tailwind color styles based on extension
-const getFileMeta = (fileName: string) => {
-  const ext = fileName.split(".").pop()?.toLowerCase() || "";
+const getFileMeta = (fileName?: string) => {
+  const ext = fileName ? fileName.split(".").pop()?.toLowerCase() || "" : "";
 
   switch (ext) {
     case "pdf":
@@ -131,8 +132,42 @@ export default function FileList({ files, folderName }: FileListProps) {
   const [shareFile, setShareFile] = useState<{ id: string; name: string } | null>(null);
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
 
+  // Semantic Search States
+  const [isSemanticMode, setIsSemanticMode] = useState(false);
+  const [semanticResults, setSemanticResults] = useState<any[] | null>(null);
+  const [isSearchingSemantic, setIsSearchingSemantic] = useState(false);
+
+  const folderId = files && files.length > 0 ? (files[0] as any).folderId : undefined;
+
+  const handleSemanticSearch = async (val: string) => {
+    if (!val.trim()) {
+      setSemanticResults(null);
+      return;
+    }
+    setIsSearchingSemantic(true);
+    try {
+      const data = await searchFiles(val, "semantic", folderId);
+      setSemanticResults(data.files || []);
+    } catch (err) {
+      console.error(err);
+      toast.error("Semantic search failed");
+    } finally {
+      setIsSearchingSemantic(false);
+    }
+  };
+
   // Filter & Sort logic
   const filteredAndSortedFiles = useMemo(() => {
+    if (isSemanticMode && semanticResults !== null) {
+      return semanticResults.map((r: any) => {
+        const fileObj = r.file ? r.file : r;
+        return {
+          ...fileObj,
+          searchScore: r.searchScore !== undefined ? r.searchScore : r.score,
+        };
+      });
+    }
+
     let result = files.filter((file) =>
       file.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -153,7 +188,7 @@ export default function FileList({ files, folderName }: FileListProps) {
     });
 
     return result;
-  }, [files, searchQuery, sortBy, sortOrder]);
+  }, [files, searchQuery, sortBy, sortOrder, isSemanticMode, semanticResults]);
 
   // Format Date
   const formatDate = (dateString: string) => {
@@ -219,15 +254,51 @@ export default function FileList({ files, folderName }: FileListProps) {
       {/* Search and Sort Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
         {/* Search */}
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-zinc-500" />
-          <input
-            type="text"
-            placeholder="Search files..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-9 pr-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 text-xs text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 outline-none focus:border-zinc-400 focus:dark:border-zinc-700 focus:bg-white focus:dark:bg-zinc-900/70 transition-all"
-          />
+        <div className="relative w-full sm:max-w-sm flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+            <input
+              type="text"
+              placeholder={isSemanticMode ? "Type query & press Enter..." : "Search by filename..."}
+              value={searchQuery}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchQuery(val);
+                if (!val.trim()) setSemanticResults(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && isSemanticMode) {
+                  handleSemanticSearch(searchQuery);
+                }
+              }}
+              className="w-full h-9 pl-9 pr-10 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 text-xs text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 outline-none focus:border-zinc-400 focus:dark:border-zinc-700 focus:bg-white focus:dark:bg-zinc-900/70 transition-all"
+            />
+            {isSearchingSemantic && (
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 animate-spin text-zinc-400" />
+            )}
+          </div>
+          
+          <button
+            type="button"
+            onClick={() => {
+              const nextVal = !isSemanticMode;
+              setIsSemanticMode(nextVal);
+              if (nextVal && searchQuery.trim()) {
+                handleSemanticSearch(searchQuery);
+              } else {
+                setSemanticResults(null);
+              }
+            }}
+            className={`h-9 px-3 rounded-lg border text-[11px] font-semibold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+              isSemanticMode
+                ? "bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400 font-bold"
+                : "border-zinc-200 dark:border-zinc-800/80 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 bg-white/40 dark:bg-transparent"
+            }`}
+            title="Toggle AI Semantic Search over file contents"
+          >
+            <Sparkles className={`w-3.5 h-3.5 ${isSemanticMode ? "text-blue-500 animate-pulse" : "text-zinc-400"}`} />
+            <span>AI Semantic</span>
+          </button>
         </div>
 
         {/* Sorting Toggles */}
@@ -304,10 +375,15 @@ export default function FileList({ files, folderName }: FileListProps) {
                     <div className="overflow-hidden space-y-0.5 min-w-0">
                       <span
                         onClick={() => setPreviewFile(file)}
-                        className="text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:text-zinc-950 hover:dark:text-zinc-50 hover:underline cursor-pointer transition-colors line-clamp-1 break-all"
+                        className="text-xs font-medium text-zinc-800 dark:text-zinc-200 hover:text-zinc-950 hover:dark:text-zinc-50 hover:underline cursor-pointer transition-colors line-clamp-1 break-all flex items-center gap-1.5"
                         title={file.name}
                       >
                         {file.name}
+                        {file.searchScore !== undefined && (
+                          <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[8px] text-emerald-600 dark:text-emerald-450 font-mono font-bold inline-block shrink-0">
+                            {Math.round(file.searchScore * 100)}% Match
+                          </span>
+                        )}
                       </span>
                       <span className="text-[10px] text-zinc-500 font-mono block sm:hidden">
                         {formatBytes(file.size)}

@@ -3,7 +3,7 @@ import { chatService } from "./chat.service";
 
 export const chatController = async (req: Request, res: Response) => {
     try {
-        const { query, folderId, limit, history } = req.body;
+        const { query, folderId, fileId, limit, history } = req.body;
 
         if (!query) {
             res.status(400).json({ error: "Query is required." });
@@ -13,6 +13,7 @@ export const chatController = async (req: Request, res: Response) => {
         const result = await chatService({
             query,
             folderId,
+            fileId,
             limit: limit ? Number(limit) : undefined,
             history
         });
