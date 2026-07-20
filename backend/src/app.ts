@@ -16,7 +16,10 @@ import chatRoutes from "./modules/chat/chat.routes";
 
 const app = express();
 app.use(cors({
-    origin: process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+        // Dynamically mirror the request origin to allow access from any frontend deployment (Vercel, localhost, etc.)
+        callback(null, true);
+    },
     credentials: true,
 })); // Allow requests from frontend with credentials
 app.use(express.json());
