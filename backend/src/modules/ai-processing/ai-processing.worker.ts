@@ -7,7 +7,11 @@ const queueClient = new AiProcessingQueueClient();
 
 async function startWorker(): Promise<void> {
     await prisma.$connect();
-    await initTelegram();
+    try {
+        await initTelegram();
+    } catch (err) {
+        console.warn("[AiProcessingWorker] Telegram initialization failed on startup. Will rely on auto-heal:", err);
+    }
     const channel = await queueClient.connect();
     await channel.prefetch(1);
 

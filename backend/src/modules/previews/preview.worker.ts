@@ -30,8 +30,7 @@ async function startWorker() {
     try {
         await initTelegram();
     } catch (err) {
-        console.error("❌ Telegram client initialization failed:", err);
-        process.exit(1);
+        console.warn("⚠️ Telegram client initialization failed on startup. Worker will continue and connection monitor will auto-heal:", err);
     }
 
     // 3. Connect to RabbitMQ

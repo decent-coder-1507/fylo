@@ -13,7 +13,10 @@ const start = async () => {
         console.error("⚠️ Database connection check failed on startup. It might still be waking up:", err);
     }
 
-    await initTelegram();
+    // Run Telegram initialization in the background to prevent blocking server startup
+    initTelegram().catch((err) => {
+        console.error("⚠️ Telegram initialization failed on startup (will auto-retry):", err);
+    });
 
     app.listen(env.port, async () => {
         console.log(`🚀 Server running on port ${env.port}`);
