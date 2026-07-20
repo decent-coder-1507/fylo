@@ -18,11 +18,27 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const getAuthStatus = async () => {
     try {
-        const authenticated = await client.isUserAuthorized();
+        if (!client.connected) {
+            return {
+                authenticated: false,
+                status: 'idle',
+                error: 'Telegram client is not connected'
+            };
+        }
+
+        // Wrap isUserAuthorized in a timeout to prevent hanging HTTP requests
+        const authenticated = await Promise.race([
+            client.isUserAuthorized(),
+            new Promise<boolean>((_, reject) => setTimeout(() => reject(new Error("Timeout waiting for Telegram authorization response")), 5000))
+        ]);
+
         if (authenticated) {
             let me = null;
             try {
-                me = await client.getMe();
+                me = await Promise.race([
+                    client.getMe(),
+                    new Promise<any>((_, reject) => setTimeout(() => reject(new Error("Timeout fetching Telegram user details")), 4000))
+                ]);
             } catch (e) {
                 // Ignore if it fails (not fully connected or temporary issue)
             }
