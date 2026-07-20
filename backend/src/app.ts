@@ -14,11 +14,22 @@ import chatRoutes from "./modules/chat/chat.routes";
     return this.toString();
 };
 
+const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://fylo-vert-six.vercel.app"
+];
+
 const app = express();
 app.use(cors({
     origin: (origin, callback) => {
-        // Dynamically mirror the request origin to allow access from any frontend deployment (Vercel, localhost, etc.)
-        callback(null, true);
+        if (!origin) return callback(null, true);
+        const isAllowed = allowedOrigins.includes(origin) || origin.startsWith("http://localhost:");
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(null, false);
+        }
     },
     credentials: true,
 })); // Allow requests from frontend with credentials
